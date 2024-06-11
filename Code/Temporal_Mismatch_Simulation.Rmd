@@ -1,0 +1,816 @@
+---
+title: "Chl_Range"
+output: html_document
+date: "2024-04-05"
+---
+
+#Set Up Environment
+```{r}
+rm(list=ls()) #clear environment
+
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(tidyverse)
+library(stringr)
+library(Metrics)
+library(data.table)
+library(cowplot)
+library(gstat)
+library(rlist)
+library(scales)
+library(ggforce)
+
+#Set working directory
+wd <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Processed_Data/"
+
+#Output directory
+Figure_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Outputs/Figures/Mismatch/" 
+
+#Table_filepath <- paste0(od, "Tables/")
+
+#Read in 30min wind and chl data
+Chl <- read.csv(paste0(wd, "Chlorophyll/chlData30min.csv"))
+Wind <- read.csv(paste0(wd, "Wind/dailyWind30min.csv"))
+Wind_Chl <- na.omit(merge(Wind, Chl, by = c("Datetime", "loc")))
+```
+
+#Select only days with >10 30min intervals
+```{r}
+Chl$Datetime <- parse_date_time(as.character(Chl$Datetime), order = "%y-%m-%d %H:%M:%S", tz = 'EST') 
+Chl$Date <- format(Chl$Datetime,"%Y-%m-%d")
+Chl$Time <- format(Chl$Datetime,"%H:%M")
+
+Chl$year <- as.numeric(format(Chl$Datetime,"%Y"))
+Chl$day <- as.numeric(format(Chl$Datetime,"%d"))
+Chl$Index <- seq(1,nrow(Chl),1)
+
+#Only select dates with days of mostly full sampling
+allChl <- Chl %>%
+  group_by(Date) %>%
+  summarise(count = n())
+allChl <- allChl[allChl$count <= max(allChl$count) & allChl$count >= max(allChl$count) - 1 ,]
+allChl <- merge(Chl, allChl, by = "Date")
+allChl <- allChl[order(allChl$Index),]
+
+Chl_noon <- allChl[allChl$Time == "12:00", ]
+Chl_noon <- Chl_noon[,c(1,3)]
+allChl <- merge(allChl, Chl_noon, by = "Date")
+names(allChl)[names(allChl) == 'mean_chl_mgL.x'] <- 'mean_chl_mgL'
+names(allChl)[names(allChl) == 'mean_chl_mgL.y'] <- 'mean_chl_noon'
+```
+
+#Subset by time range and calculate the stats
+```{r}
+#Subset by time range
+timeInt <- as.data.frame(unique(allChl$Time))
+names(timeInt) <- c("Time")
+timeInt$numTime <- seq(9,15,0.5)
+
+#Calculate stats 
+Daily_chl <- function(loc_name, interval){
+  Hour_range <- c(12 - interval/2, 12 + interval/2)
+  targetTime <- timeInt[timeInt$numTime >= Hour_range[1] & timeInt$numTime <= Hour_range[2],]
+  targetChl <- merge(allChl, targetTime, by = "Time")
+  targetChl <- targetChl[order(targetChl$Index),]
+  
+  locChl <- targetChl[targetChl$loc == loc_name,]
+  Chl_range <- locChl %>%
+    group_by(Date) %>%
+    summarise(max = max(mean_chl_mgL, na.rm=TRUE), 
+              min = min(mean_chl_mgL, na.rm=TRUE),
+              range = max(mean_chl_mgL, na.rm=TRUE) - min(mean_chl_mgL, na.rm=TRUE),
+              mean = mean(mean_chl_mgL, na.rm = TRUE),
+              median = median(mean_chl_mgL, na.rm= TRUE),
+              sd = sd(mean_chl_mgL, na.rm = TRUE),
+              quant_10 = quantile(mean_chl_mgL, probs = c(.1)),
+              quant_90 = quantile(mean_chl_mgL, probs = c(.9)),
+              count = mean(count),
+              MAE = mae(mean_chl_mgL, mean_chl_noon),
+              Chl_noon = mean(mean_chl_noon))
+  Chl_range$Loc <- loc_name
+  Chl_range$Date <- as.Date(Chl_range$Date, format = "%Y-%m-%d")
+  return(Chl_range)
+}
+```
+
+#Chl Range within defined interval
+```{r}
+Target_hours <- seq(1,6,1)
+intDF <- data.frame()
+
+for (i in 1:length(Target_hours)){
+  Chl_NH <- Daily_chl("jlnewhope", Target_hours[i])
+  Chl_WO <- Daily_chl("jlwhiteoak", Target_hours[i])
+  Chl_Haw <- Daily_chl("jlhaw", Target_hours[i])
+  
+  #Combine
+  combineChl <- as.data.frame(rbind(Chl_NH, Chl_WO, Chl_Haw))
+  combineChl$timeInt <- Target_hours[i]/2
+  
+  combineChl$Category[combineChl$Chl_noon >= 30] <- "high"
+  combineChl$Category[combineChl$Chl_noon < 30 & combineChl$mean > 7] <- "medium"
+  combineChl$Category[combineChl$Chl_noon <= 7] <- "low"
+  
+  intDF <- rbind(intDF, combineChl)
+  
+  int_plot <- ggplot(combineChl, aes(y = mean, x = Chl_noon, color = factor(Category))) + 
+    geom_point(alpha = 0.8, size = 2 ) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    labs(x = "Simulated Field Sample\nChlorophyll at Noon [\u03bcg/L]", 
+         y = "Simulated Satellite Sample\nChlorophyll Range during the Target Interval [\u03bcg/L]", 
+         color = "Buoy") +
+    geom_errorbar(aes(ymin=min, ymax=max), width=1, alpha = 0.5,
+                   position=position_dodge(.05), show.legend = F) +
+    theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        #legend.position = c(0.2, 0.85),
+        legend.box.background = element_rect(colour = "grey20")) +
+    scale_color_manual(name = 'Chlorophyll Range', 
+                       breaks = c("low", "medium", "high"),
+                       labels = c("Oligiotrophic (<=7 \u03bcg/L)", "Eutrophic (7-30 \u03bcg/L)", "Hypereutrophic (>=30 \u03bcg/L)"), 
+                       values = c("#fc8961", "#b73779", "#51127c"),   #c("#1B9E77", "#D95F02", "#7570B3"), #c('#74a9cf', '#0f52ba', '#000080'), 
+                       guide = "legend") +
+    geom_abline(lty = "longdash") +
+    scale_y_continuous(breaks = seq(0, 100, 20), limits = c(0,110)) +
+    scale_x_continuous(breaks = seq(0, 100, 20), limits = c(0,110)) +
+    geom_vline(xintercept = (7)) +
+    geom_vline(xintercept = (30)) +
+    ggtitle(paste0("Chlorophyll Range Over +/-",as.character(Target_hours[i]/2),"hr from Noon"))
+  
+  my_legend <- get_legend(int_plot)
+  int_plot <- int_plot + theme(legend.position = "none")
+  
+  ggsave(path = Figure_filepath, filename = paste0("chl_Interval",as.character(Target_hours[i]/2),"hrs.png"), device = "png", plot = int_plot, width = 7.5, height = 7.5, dpi = 300, units = "in")
+  
+}
+
+ggsave(path = Figure_filepath, filename = paste0("chl_Interval_legend.png"), device = "png", plot = my_legend, dpi = 300)
+
+rm(Chl_Haw, Chl_NH, Chl_WO, combineChl, int_plot)
+```
+
+#Plot Residuals of chl range within defined intervals
+```{r}
+residStats <- data.frame()
+
+for (i in 1:length(Target_hours)){
+
+  Chl_NH <- Daily_chl("jlnewhope", Target_hours[i])
+  Chl_WO <- Daily_chl("jlwhiteoak", Target_hours[i])
+  Chl_Haw <- Daily_chl("jlhaw", Target_hours[i])
+  
+  #Combine
+  combineChl <- as.data.frame(rbind(Chl_NH, Chl_WO, Chl_Haw))
+  combineChl$timeInt <- Target_hours[i]/2
+  
+  # >95 residuals
+  combineChl100up <- combineChl[combineChl$Chl_noon >= 30,]
+  lm_100up <- lm(combineChl100up$mean - combineChl100up$Chl_noon ~ 0)
+  resid100up_stats <- as.data.frame(as.list(summary(resid(lm_100up))))
+  resid100up_stats$count <- nrow(combineChl100up)
+  resid100up_stats$MAD <- sum(abs(combineChl100up$mean - combineChl100up$Chl_noon))/nrow(combineChl100up)
+  
+  # 10 - 95 residuals
+  combineChl10_100 <- combineChl[combineChl$Chl_noon < 30 & combineChl$Chl_noon > 7,]
+  lm_10_100 <- lm(combineChl10_100$mean - combineChl10_100$Chl_noon ~ 0)
+  resid10_100_stats <- as.data.frame(as.list(summary(resid(lm_10_100))))
+  resid10_100_stats$count <- nrow(combineChl10_100)
+  resid10_100_stats$MAD <- sum(abs(combineChl10_100$mean - combineChl10_100$Chl_noon))/nrow(combineChl10_100)
+  
+  # < 10 residuals
+  combineChl10down <- combineChl[combineChl$Chl_noon <= 7,]
+  lm_10down <- lm(combineChl10down$mean - combineChl10down$Chl_noon ~ 0)
+  resid10down_stats <- as.data.frame(as.list(summary(resid(lm_10down))))
+  resid10down_stats$count <- nrow(combineChl10down)
+  resid10down_stats$MAD <- sum(abs(combineChl10down$mean - combineChl10down$Chl_noon))/nrow(combineChl10down)
+  
+  #Combine into df
+  residDF <- as.data.frame(rbind(resid100up_stats, resid10_100_stats, resid10down_stats))
+  residDF$category <- c("lm100", "lm10_100", "lm10")
+  residDF$timeInt <- Target_hours[i]
+  
+  residStats <- rbind(residStats, residDF)
+}
+
+lm10_start <- c(0,0,0,0,0,0,1,0, "lm10", 0)
+lm10_100_start <- c(0,0,0,0,0,0,1,0, "lm10_100", 0)
+lm100_start <- c(0,0,0,0,0,0,1,0, "lm100", 0)
+
+start_df <- as.data.frame(rbind(lm10_start,lm10_100_start,lm100_start))
+names(start_df) <- names(residStats)
+col.num <- c("Min.", "X1st.Qu.", "Median", "Mean", "X3rd.Qu.", "Max.", "count", "MAD", "timeInt")
+start_df[col.num] <- sapply(start_df[col.num],as.numeric)
+
+residStats <- as.data.frame(rbind(residStats, start_df))
+
+gg_resid <- ggplot(data=residStats, aes(x = timeInt/2, y = residStats$MAD, group = category, color = category)) + 
+  geom_smooth(se = F) +
+  geom_point(aes(color= category), size = 2, show.legend = T) + 
+  #stat_smooth(se = F, size = 0.5, method = "nls", formula = y ~ a*exp(b*(1/x)), start = list(a=1,b=1), linewidth = 1) +
+  labs(x = "\nHours Since Sample", y = "\nMean Absolute Deviation [\u03bcg/L]") + 
+  scale_color_manual(name = 'Chlorophyll Range', 
+                     labels = c("<=7 \u03bcg/L", "7-30 \u03bcg/L", ">=30 \u03bcg/L"), 
+                     values = c("#fc8961", "#b73779", "#51127c"), #c('#74a9cf', '#0f52ba', '#000080'), 
+                     guide = "legend") +
+  scale_x_continuous(breaks = seq(0, 3, 0.5)) +
+  scale_y_continuous(breaks = seq(0,4,1), limits = c(0,4)) +
+  ggtitle("Mean Absolute Deviation per Half Hour Time Interval") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        #legend.position = c(0.215, 0.85),
+        legend.position = "none",
+        legend.box.background = element_rect(colour = "grey20"))
+
+gg_resid
+
+ggsave(path = Figure_filepath, filename = paste0("MAD_timeints.png"), device = "png", plot = gg_resid, width = 7.5, height = 7.5, dpi = 300, units = "in")
+```
+
+
+#Calculate longest string of consecutive days
+```{r}
+Target_hours <- 6
+Chl_NH <- Daily_chl("jlnewhope", Target_hours)
+Chl_WO <- Daily_chl("jlwhiteoak", Target_hours)
+Chl_Haw <- Daily_chl("jlhaw", Target_hours)
+
+consecDays <- function(intData){
+  intData %>% 
+    group_by(cumsum(c(0, diff(Date) - 1))) %>%
+    summarise(start_date = first(Date), 
+              end_date = last(Date),
+              ndays = n()) %>%
+    select(start_date, end_date, ndays)
+}
+
+Chl_NH_days <- consecDays(Chl_NH); Chl_NH_days$Loc <- "jlnewhope"
+Chl_WO_days <- consecDays(Chl_WO); Chl_WO_days$Loc <- "jlwhiteoak"
+Chl_Haw_days <- consecDays(Chl_Haw); Chl_Haw_days$Loc <- "jlhaw"
+
+combineDays <- rbind(Chl_NH_days, Chl_WO_days, Chl_Haw_days)
+maxDays <- combineDays[combineDays$ndays == max(combineDays$ndays),]
+maxDays$mid_date <- maxDays$start_date + floor((maxDays$end_date-maxDays$start_date)/2)
+allChl$Date <- as.Date(format(allChl$Datetime,"%Y-%m-%d"))
+
+targetDays <- allChl[allChl$Date >= maxDays$start_date & allChl$Date <= maxDays$end_date,]
+row.names(targetDays) <- NULL
+
+times <- c("09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00")
+
+times_list <- rep(times, length(unique(targetDays$Date)))
+dates_list <- as.data.frame(rep(unique(targetDays$Date), each = length(times)))
+dates_list$time <- times_list
+names(dates_list) <- c("Date", "Time")
+dates_list$Date <- as.Date(format(dates_list$Date,"%Y-%m-%d"))
+
+targetAll <- merge(dates_list, targetDays, by = c("Date", "Time"), all = T)
+row.names(targetAll) <- NULL
+targetAll$Datetime <- parse_date_time(paste(as.character(targetAll$Date), as.character(targetAll$Time)), order = "%y/%m/%d %H:%M", tz = 'EST') 
+```
+
+#Hour Intervals
+```{r}
+Sample_date <- "2017-08-14"
+full_day <- c(0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6)
+
+timeSubset <- function(dayRange, timeRange){
+  days <- c(1:dayRange)
+  day_starts <- (days*24) - 1
+  days_reps <- rep(day_starts, each = length(full_day))
+  days_add <- rep(full_day, dayRange)
+  days_sum <- as.data.frame(cbind(days_reps, days_add))
+  days_sum$days_sum <- days_sum$days_reps + days_sum$days_add
+  
+  day_ints <- days_sum$days_sum
+  
+  day_ints <- c(timeRange, day_ints)
+  daysDF <- as.data.frame(day_ints)
+  daysDF$Index <- seq(1, nrow(daysDF), 1)
+  names(daysDF) <- c("Int", "Index")
+  return(daysDF)
+}
+
+odds <- function(x) subset(x, x %% 2 == 1)
+evens <- function(x) subset(x, x %% 2 == 0)
+
+get_intervals <- function(Sample_time){
+  hour <-as.numeric(sub("\\:.*", "", Sample_time))
+  minute <- as.numeric(sub('.*:', '', Sample_time))
+  
+  midpoint <- targetAll[targetAll$Date == Sample_date & targetAll$Time == Sample_time,]
+  
+  morning <- seq(9,hour, 0.5) - 9
+  evening <- seq(hour, 15, 0.5) - hour
+
+  target_forward <- targetAll[which(targetAll$Date == Sample_date & targetAll$Time == Sample_time) : nrow(targetAll),]
+  target_backwards <- targetAll[1:which(targetAll$Date == Sample_date & targetAll$Time == Sample_time)-1,]
+  
+  dayRangeF <- (length(unique(target_forward$Date))-1)
+  dayRangeB <- (length(unique(target_backwards$Date))-1)
+  
+  #After sample time
+  daysDFpost <- timeSubset(dayRangeF, evening)
+
+  #Before sample time
+  daysDFpre <- timeSubset(dayRangeB, morning)
+  daysDF2 <- daysDFpre[-1,]
+  daysDF2 <- daysDF2[order(daysDF2$Index, decreasing = TRUE), ]
+  daysDF2$Index <- -1*daysDF2$Index
+  
+  #Combine
+  daysDF <- as.data.frame(rbind(daysDF2, daysDFpost))
+  row.names(daysDF) <- NULL
+
+  targetAll$timePassed <- daysDF$Int
+  targetAll$timePassedInt <- daysDF$Index
+
+  #Remove duplicated rows and filter only for fully symmetrical time intervals 
+  Duplicated <- as.numeric(abs(length(morning) - length(evening)) -1)
+  
+  if (length(morning) < length(evening)) {
+    hour_intervals <- daysDF[-seq(nrow(daysDF),nrow(daysDF) - Duplicated, -1), ]
+    hour_intervals <- sort(unique(abs(hour_intervals$Index)))
+    hour_intervals <- odds(hour_intervals)
+  } else if (length(morning) > length(evening)) {
+    hour_intervals <- daysDF[-seq(1, Duplicated, 1), ]
+    hour_intervals <- sort(unique(abs(hour_intervals$Index)))
+    hour_intervals <- odds(hour_intervals)
+  } else {
+    hour_intervals <- sort(unique(abs(daysDF$Index)))
+    hour_intervals <- odds(hour_intervals)
+  }
+  
+  names(daysDF) <- c("timePassed", "timePassedInt")
+  return_list <- list(hour_intervals, daysDF)
+  return(return_list)
+}
+
+hour_intervals10 <- get_intervals(Sample_time = "10:00")
+hour_intervals12 <- get_intervals(Sample_time = "12:00")
+hour_intervals14 <- get_intervals(Sample_time = "14:00")
+
+targetAll$Index <- seq(1,nrow(targetAll),1)
+targetAll$loc <- "jlnewhope"
+```
+
+#Intervals
+```{r}
+percent <- 0.2
+nThreshUp <- function(data, chl_threshold){
+  data %>%
+  reframe(rleid(na.omit(mean_chl_mgL) >= chl_threshold)) %>%
+  n_distinct()
+}
+
+nThreshDown <- function(data, chl_threshold){
+  data %>%
+  reframe(rleid(na.omit(mean_chl_mgL) <= chl_threshold)) %>%
+  n_distinct()
+}
+
+errorTime <- function(timeStep, intsDF, Sample_time){
+  targetSub <- as.data.frame(cbind(targetAll, intsDF))
+  midpt_value <- targetSub[targetSub$Date == Sample_date & targetSub$Time == Sample_time,]
+  
+  targetTime <- targetSub[targetSub$timePassedInt <= timeStep & targetSub$timePassedInt >= -1*timeStep,]
+
+  intMax = round(max(targetTime$mean_chl_mgL, na.rm=TRUE),2)
+  intMin = round(min(targetTime$mean_chl_mgL, na.rm=TRUE),2)
+  intRange = round(max(targetTime$mean_chl_mgL, na.rm=TRUE) - min(targetTime$mean_chl_mgL, na.rm=TRUE),2)
+  intMean = round(mean(targetTime$mean_chl_mgL, na.rm = TRUE),2)
+  intMedian = round(median(targetTime$mean_chl_mgL, na.rm= TRUE),2)
+  intSD = round(sd(targetTime$mean_chl_mgL, na.rm = TRUE),2)
+  intQuant10 = round(as.numeric(quantile(targetTime$mean_chl_mgL, probs = c(.1), na.rm = TRUE),2))
+  intQuant90 = round(as.numeric(quantile(targetTime$mean_chl_mgL, probs = c(.9), na.rm = TRUE),2))
+  intCount = as.numeric(nrow(targetTime))
+  intNA = as.numeric(sum(is.na(targetTime$mean_chl_mgL)))
+  intMAE = round(sum(abs(na.omit(targetTime$mean_chl_mgL) - na.omit(targetTime$mean_chl_noon))) / nrow(targetTime),2)
+  
+  TimesUp <- nrow(targetTime[ targetTime$mean_chl_mgL > (midpt_value$mean_chl_mgL* (1+percent)), ])
+  TimesDown <- nrow(targetTime[ targetTime$mean_chl_mgL < (midpt_value$mean_chl_mgL*(1-percent)), ])
+  Times = nrow(targetTime) - (TimesUp + TimesDown)
+  
+  timePassed <- max(targetTime$timePassed)*2
+  probability <- (Times/nrow(targetTime)) * 100
+
+  statsList <- c(intMax, intMin, intRange, intMean, intMedian, intSD, intQuant10, intQuant90, intCount, intNA, intMAE, Times, timePassed, probability)
+  statsDF <- as.data.frame(t(as.data.frame(statsList)))
+  names(statsDF) <- c("Max", "Min", "Range", "Mean", "Median", "SD", "Quant10", "Quant90", "Count", "Count_NA", "MAE", "nTimes", "timePassed", "Probability")
+  row.names(statsDF) <- paste0("int", as.character(timeStep))
+  return(statsDF)
+}
+```
+
+#Apply Functions
+```{r}
+intError10 <- data.frame()
+data <- hour_intervals10[[2]]
+ints <- hour_intervals10[[1]]
+
+for(i in 1:length(ints)){
+  intErr <- errorTime(timeStep = ints[i], intsDF = data, Sample_time = "10:00" )
+  intErr[sapply(intErr, is.infinite)] <- 100
+  intErr$sampleTime <- "10:00"
+  intError10 <- rbind(intError10, intErr)
+}
+
+intError12 <- data.frame()
+data <- hour_intervals12[[2]]
+ints <- hour_intervals12[[1]]
+
+for(i in 1:length(ints)){
+  intErr <- errorTime(timeStep = ints[i], intsDF = data, Sample_time = "12:00" )
+  intErr[sapply(intErr, is.infinite)] <- 100
+  intErr$sampleTime <- "12:00"
+  intError12 <- rbind(intError12, intErr)
+}
+
+intError14 <- data.frame()
+data <- hour_intervals14[[2]]
+ints <- hour_intervals14[[1]]
+
+for(i in 1:length(ints)){
+  intErr <- errorTime(timeStep = ints[i], intsDF = data, Sample_time = "14:00" )
+  intErr[sapply(intErr, is.infinite)] <- 100
+  intErr$sampleTime <- "14:00"
+  intError14 <- rbind(intError14, intErr)
+}
+
+intError2 <- as.data.frame(rbind(intError10, intError12, intError14))
+intError <- as.data.frame(rbind(intError10[c(6,11,13:15)], intError12[c(6,11,13:15)], intError14[c(6,11,13:15)]))
+```
+
+#Target All Time Series
+```{r}
+#Field samples
+target_midDay <- targetAll[targetAll$Date == "2017-08-14",]
+target_midDay$Index <- row.names(target_midDay)
+row.names(target_midDay) <- NULL
+middaySplit <- target_midDay[c(1,13),c(1:3)]
+target_midpts <- target_midDay[target_midDay$Time == "10:00" | target_midDay$Time == "12:00" | target_midDay$Time == "14:00",]
+
+midptIndex <- as.numeric(target_midpts$Index)
+
+#Colors
+TSSColors <- brewer.pal(7,"Greys")
+TSSColors <- TSSColors[2:7]
+names(TSSColors) <- c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks")
+
+#Plot time intervals
+hourInts <- c(seq(480/2, 0, -1), seq(1,480/2, 1))
+targetAll$timeSince <- hourInts
+targetInts = subset(targetAll, subset = timeSince %in% c(0,6,13,26,39,91,169))
+row.names(targetInts) <- NULL
+
+targetInts$Group <- c("2 weeks","1 week","3 days","2 days","1 day","Calender Day","Noon","Calender Day","1 day","2 days","3 days","1 week","2 weeks")
+targetInts$Color <- c(rlist::list.reverse(TSSColors),"black", TSSColors)
+targetInts2 <- targetInts[-c(7),]
+
+row.names(targetInts2) <- NULL
+
+LineUp <- targetInts2$Datetime[1:6] - (60*60*3)
+LineDown <- targetInts2$Datetime[7:12] + (60*60*3)
+Lines <- c(LineUp, LineDown)
+targetInts2$lines <- Lines
+
+targetAll2 <- targetAll[-midptIndex,]
+
+gg_chl <- ggplot(na.omit(targetAll2), aes(x=Datetime, y=mean_chl_mgL)) +
+  annotate("rect",xmin = targetInts2$lines[6], xmax = targetInts2$lines[7],ymin=-Inf,ymax=Inf, alpha=0.4, fill="grey40") +
+  ggnewscale::new_scale_color() +
+  ggnewscale::new_scale("linetype") +
+  geom_vline(data = targetInts2, aes(xintercept = lines, group = as.factor(Group), color = as.factor(Group) ), 
+             show.legend = T, linetype = "solid", key_glyph = "path") +
+  scale_color_manual(name="+/- Time Since Sampling",
+                     values = TSSColors,
+                     breaks = c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     labels = c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     guide = guide_legend(order = 2)) + 
+  guides(col = guide_legend(title.position="top", title.hjust = 0.5)) +
+  ggnewscale::new_scale_color() +
+  geom_point() + 
+  ggnewscale::new_scale_color() +
+  geom_point(data = target_midpts, aes(x = target_midpts$Datetime, y = mean_chl_mgL, fill = Time), color = "black", show.legend = F, shape = 24, size = 2.5) +
+  #scale_color_manual(values = c('#35b779', '#31688e', '#440154'), guide = "none") +
+  scale_fill_manual(values = c('#35b779', '#31688e', '#440154'), guide = "none") +
+  labs(x = "Date",y = "Chlorophyll [\u03bcg/L]", color = "") +
+  ggtitle("Chlorophyll Time Series") +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.position = "bottom") +
+  scale_y_continuous(breaks = seq(0,50,10), limits = c(10,40)) + 
+  scale_x_datetime(breaks = c(as.POSIXct("2017-08-01 09:00:00 EST"),
+                              as.POSIXct("2017-08-07 09:00:00 EST"), 
+                              as.POSIXct("2017-08-14 12:00:00 EST"),
+                              as.POSIXct("2017-08-21 15:00:00 EST"),
+                              as.POSIXct("2017-08-27 15:00:00 EST"), "1 week"),
+                 labels = date_format("%b %d", tz = "EST"),
+                 expand = c(0, 0),
+                 limits = c(as.POSIXct("2017-07-26 00:00:00 EST"),
+                            as.POSIXct("2017-09-02 23:59:00 EST")))
+
+gg_chl
+
+ggsave(path = Figure_filepath, filename = paste0("Interval_Chl_TimeSeries.png"), device = "png", plot = gg_chl, width = 9.5, height = 6.5, dpi = 300, units = "in")
+```
+
+#Target All Time Series Simple
+```{r}
+gg_chl_simple <- ggplot(na.omit(targetAll), aes(x=Datetime, y=mean_chl_mgL)) +
+  geom_vline(data = targetInts2, aes(xintercept = lines, group = as.factor(Group), color = as.factor(Group) ), 
+             show.legend = T, linetype = "solid", key_glyph = "path") +
+  scale_color_manual(name="+/- Time Since Sampling",
+                     values = TSSColors,
+                     breaks = c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     labels = c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     guide = guide_legend(order = 2)) + 
+  guides(col = guide_legend(title.position="top", title.hjust = 0.5)) +
+  ggnewscale::new_scale_color() +
+  geom_point() + 
+  labs(x = "Date",y = "Chlorophyll [\u03bcg/L]", color = "") +
+  ggtitle("Chlorophyll Time Series") +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.position = "bottom") +
+  scale_y_continuous(breaks = seq(0,50,10), limits = c(10,40)) + 
+  
+  scale_x_datetime(breaks = c(as.POSIXct("2017-08-01 09:00:00 EST"),
+                              as.POSIXct("2017-08-07 09:00:00 EST"), 
+                              as.POSIXct("2017-08-14 12:00:00 EST"),
+                              as.POSIXct("2017-08-21 15:00:00 EST"),
+                              as.POSIXct("2017-08-27 15:00:00 EST"), "1 week"),
+                 labels = date_format("%b %d", tz = "EST"),
+                 expand = c(0, 0),
+                 limits = c(as.POSIXct("2017-07-26 00:00:00 EST"),
+                            as.POSIXct("2017-09-02 23:59:00 EST")))
+
+gg_chl_simple
+
+ggsave(path = Figure_filepath, filename = paste0("Interval_Chl_TimeSeries_Simple.png"), device = "png", plot = gg_chl_simple, width = 9.5, height = 6.5, dpi = 300, units = "in")
+```
+
+#Target Sampling Midpoint Day Aug 14
+```{r}
+target_midDay2 <- target_midDay[ ! target_midDay$Index %in% as.character(midptIndex), ]
+
+gg_midday <- ggplot(na.omit(target_midDay2), aes(x=Datetime, y=mean_chl_mgL)) +
+  annotate("rect",xmin = middaySplit$Datetime[1], xmax = middaySplit$Datetime[2],ymin=-Inf,ymax=Inf, alpha=0.3, fill="grey50") +
+  geom_vline(data = middaySplit, aes(xintercept = Datetime), color = TSSColors[1], linetype = "solid", show.legend = F) +
+  geom_point(size = 3) + 
+  ggnewscale::new_scale_color() +
+  ggnewscale::new_scale_fill() +
+  ggnewscale::new_scale("shape") +
+  geom_point(data = target_midpts, aes(x = target_midpts$Datetime, y = mean_chl_mgL, fill = Time), color = "black", show.legend = T, shape = 24, size = 4) +
+  scale_fill_manual(values = c('#35b779', '#31688e', '#440154'), guide = "none") +
+  geom_errorbar(data = target_midpts, aes(ymin=mean_chl_mgL*0.8, ymax=mean_chl_mgL*1.2, color = Time), width=500,
+                     position=position_dodge(.05), show.legend = F) +
+  labs(title = expression(paste("August 14"^"th", ", 2017")),x = "Date",y = "Chlorophyll [\u03bcg/L]", color = "") +
+  #ggtitle("August 14, 2017") +
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        axis.title.x = element_blank(),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        panel.grid.major.x = element_blank()) +
+  scale_x_datetime(date_labels = '%H:%M', 
+                   limits = c(as.POSIXct('2017-08-14 09:00:00', tz = 'EST'), 
+                              as.POSIXct('2017-08-14 15:00:00', tz = 'EST')), 
+                   breaks = '1 hour') +
+  scale_color_manual(name="Chlorophyll Field\nSample +/- 20% [\u03bcg/L]",
+                     labels=c("28.26 +/- 5.65", "34.81 +/- 6.96", "27.33 +/- 5.47"),
+                     values = c('#35b779', '#31688e', '#440154')) +
+  scale_fill_manual(name="Chlorophyll Field\nSample +/- 20% [\u03bcg/L]",
+                     labels=c("28.26 +/- 5.65", "34.81 +/- 6.96", "27.33 +/- 5.47"),
+                     values = c('#35b779', '#31688e', '#440154')) +
+  scale_shape_manual(name="Chlorophyll Field\nSample +/- 20% [\u03bcg/L]",
+                     labels=c("28.26 +/- 5.65", "34.81 +/- 6.96", "27.33 +/- 5.47"),
+                     values = c(24,24,24)) +
+  scale_y_continuous(breaks = seq(0,40,10), limits = c(10,42)) 
+
+gg_midday
+
+ggsave(path = Figure_filepath, filename = paste0("MiddleDay_TimeSeries.png"), device = "png", plot = gg_midday, width = 9.5, height = 6.5, dpi = 300, units = "in")
+```
+
+#Target All Wind Speed
+```{r}
+Wind_Chl_TS <- merge(targetAll, Wind, by = c("Datetime", "loc"), all.x = T)
+Wind_Chl_Sub <- merge(target_midDay, Wind, by = c("Datetime", "loc"), all.x = T)
+
+gg_wind_hist <- ggplot(na.omit(Wind_Chl_TS), aes(x=avg_wind_speed)) +
+  geom_histogram(breaks=seq(0,10,0.5), color = "grey20", fill = "grey50") + 
+  labs(y = "Frequency",x = "Wind [m/s]") +
+  ggtitle("Wind Time Series") +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.position = "bottom") +
+  scale_x_continuous(breaks = seq(0,10,1), limits = c(0,10)) +
+  scale_y_continuous(breaks = seq(0,60,10), limits = c(0,60)) 
+
+gg_wind_hist
+
+ggsave(path = Figure_filepath, filename = paste0("Interval_Wind_Histogram.png"), device = "png", plot = gg_wind_hist, width = 9.5, height = 6.5, dpi = 300, units = "in")
+
+gg_wind_ts <- ggplot(na.omit(Wind_Chl_TS), aes(x=Datetime, y=avg_wind_speed)) +
+  geom_vline(data = targetInts2, aes(xintercept = lines, group = as.factor(Group), color = as.factor(Group) ), 
+             show.legend = T, linetype = "solid", key_glyph = "path") +
+  scale_color_manual(name="+/- Time Since Sampling",
+                     values = TSSColors,
+                     breaks = c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     labels = c("Calender Day","1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     guide = guide_legend(order = 2)) + 
+  guides(col = guide_legend(title.position="top", title.hjust = 0.5)) +
+  ggnewscale::new_scale_color() +
+  geom_point() + 
+  labs(x = "Date",y = "Wind Speed [m/s]", color = "") +
+  ggtitle("Wind Time Series") +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.position = "bottom") +
+  scale_y_continuous(breaks = seq(0,10,2), limits = c(0,10)) + 
+  
+  scale_x_datetime(breaks = c(as.POSIXct("2017-08-01 09:00:00 EST"),
+                              as.POSIXct("2017-08-07 09:00:00 EST"), 
+                              as.POSIXct("2017-08-14 12:00:00 EST"),
+                              as.POSIXct("2017-08-21 15:00:00 EST"),
+                              as.POSIXct("2017-08-27 15:00:00 EST"), "1 week"),
+                 labels = date_format("%b %d", tz = "EST"),
+                 expand = c(0, 0),
+                 limits = c(as.POSIXct("2017-07-26 00:00:00 EST"),
+                            as.POSIXct("2017-09-02 23:59:00 EST")))
+
+gg_wind_ts
+
+ggsave(path = Figure_filepath, filename = paste0("Interval_Wind_TimeSeries.png"), device = "png", plot = gg_wind_ts, width = 9.5, height = 6.5, dpi = 300, units = "in")
+
+print(paste0("Median Wind Speed: ", round(median(na.omit(Wind_Chl_TS$avg_wind_speed)),2)))
+print(paste0("Mean Wind Speed: ", round(mean(na.omit(Wind_Chl_TS$avg_wind_speed)),2)))
+print(paste0("Min Wind Speed: ", round(min(na.omit(Wind_Chl_TS$avg_wind_speed)),2)))
+print(paste0("Max Wind Speed: ", round(max(na.omit(Wind_Chl_TS$avg_wind_speed)),2)))
+print(paste0("SD Wind Speed: ", round(sd(na.omit(Wind_Chl_TS$avg_wind_speed)),2)))
+```
+
+#Plot Sampling Probabilities
+```{r}
+daysSegs <- as.data.frame(cbind(c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks"), c(3,24,48,72,7*24,14*24)))
+names(daysSegs) <- c("Group", "xint")
+
+intError$Group <- NA
+intError$Group[intError$sampleTime == "10:00"] <- "A"
+intError$Group[intError$sampleTime == "12:00"] <- "B"
+intError$Group[intError$sampleTime == "14:00"] <- "C"
+
+gg_err <- ggplot(intError, aes(x = (timePassed/2), y= (Probability), color = as.factor(Group)),  key_glyph = "path") + 
+  geom_vline(data = daysSegs, aes(xintercept = as.numeric(xint), 
+                                  group = factor(Group), 
+                                  color = factor(Group)), 
+             show.legend = F, 
+             linetype = "solid",  
+             key_glyph = "path") +
+  scale_color_manual(name="Time Since Sample",
+                     breaks = c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     values = c(TSSColors), 
+                     guide = guide_legend(order = 2)) +
+  ggnewscale::new_scale_color() +
+  geom_point(size = 3, aes(color = Group)) +
+  ylim(0,100) +
+  scale_color_manual(name="Chlorophyll Field\nSample +/- 20% [\u03bcg/L]",
+                     breaks = c("C","A", "B"),
+                     labels=c("27.33 +/- 5.47","28.26 +/- 5.65", "34.81 +/- 6.96"),
+                     #labels=c("27.33 (14:00)","28.26 (10:00)", "34.81 (12:00)"),
+                     values = c('#440154', '#35b779', '#31688e'),
+                     guide = guide_legend(order = 1)) +
+  scale_x_continuous(name = "+/- Time Since Sampling",
+                     breaks = c(3,24,48,72,168,336),
+                     labels = c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks")) +
+  labs(x = "Time Since Sample", y= "Probability of Field Sample Measurement") +
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.justification = "bottom")
+
+gg_err
+
+ggsave(path = Figure_filepath, filename = paste0("Probability.png"), device = "png", plot = gg_err, width = 11.5, height = 6.5, dpi = 300, units = "in")
+```
+
+
+#Plot Sampling MAE
+```{r}
+gg_mae <- ggplot(intError, aes(x = (timePassed/2), y= MAE, color = as.factor(Group)),  key_glyph = "path") + 
+  geom_vline(data = daysSegs, aes(xintercept = as.numeric(xint), 
+                                  group = factor(Group), 
+                                  color = factor(Group)), 
+             show.legend = F, 
+             linetype = "solid",  
+             key_glyph = "path") +
+  scale_color_manual(name="Time Since Sample",
+                     breaks = c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     values = c(TSSColors), 
+                     guide = guide_legend(order = 2)) +
+  ggnewscale::new_scale_color() +
+  geom_point(size = 3, aes(color = Group)) +
+  ylim(2,8) +
+  scale_color_manual(name="Chlorophyll Field\nSample +/- 20% [\u03bcg/L]",
+                     breaks = c("C","A", "B"),
+                     labels=c("27.33 +/- 5.47","28.26 +/- 5.65", "34.81 +/- 6.96"),
+                     #labels=c("27.33 (14:00)","28.26 (10:00)", "34.81 (12:00)"),
+                     values = c('#440154', '#35b779', '#31688e'),
+                     guide = guide_legend(order = 1)) +
+  scale_x_continuous(name = "+/- Time Since Sampling",
+                     breaks = c(3,24,48,72,168,336),
+                     labels = c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks")) +
+  labs(x = "Time Since Sample", y= "Mean Absolute Error \n of Field Sample Measurement") +
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.justification = "bottom")
+
+gg_mae
+
+ggsave(path = Figure_filepath, filename = paste0("MAE.png"), device = "png", plot = gg_mae, width = 11.5, height = 6.5, dpi = 300, units = "in")
+```
+
+#Plot Sampling SD
+```{r}
+gg_sd <- ggplot(intError, aes(x = (timePassed/2), y= SD, color = as.factor(Group)),  key_glyph = "path") + 
+  geom_vline(data = daysSegs, aes(xintercept = as.numeric(xint), 
+                                  group = factor(Group), 
+                                  color = factor(Group)), 
+             show.legend = F, 
+             linetype = "solid",  
+             key_glyph = "path") +
+  scale_color_manual(name="Time Since Sample",
+                     breaks = c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks"),
+                     values = c(TSSColors), 
+                     guide = guide_legend(order = 2)) +
+  ggnewscale::new_scale_color() +
+  geom_point(size = 3, aes(color = Group)) +
+  ylim(2,6) +
+  scale_color_manual(name="Chlorophyll Field\nSample +/- 20% [\u03bcg/L]",
+                     breaks = c("C","A", "B"),
+                     labels=c("27.33 +/- 5.47","28.26 +/- 5.65", "34.81 +/- 6.96"),
+                     #labels=c("27.33 (14:00)","28.26 (10:00)", "34.81 (12:00)"),
+                     values = c('#440154', '#35b779', '#31688e'),
+                     guide = guide_legend(order = 1)) +
+  scale_x_continuous(name = "+/- Time Since Sampling",
+                     breaks = c(3,24,48,72,168,336),
+                     labels = c("Calender Day", "1 day", "2 days", "3 days", "1 week", "2 weeks")) +
+  labs(x = "Time Since Sample", y= "Standard Deviation \n of Field Sample Measurement") +
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.justification = "bottom")
+
+gg_sd
+
+ggsave(path = Figure_filepath, filename = paste0("SD.png"), device = "png", plot = gg_sd, width = 11.5, height = 6.5, dpi = 300, units = "in")
+```

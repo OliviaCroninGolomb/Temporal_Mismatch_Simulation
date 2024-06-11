@@ -1,0 +1,244 @@
+---
+title: "Rubric_MatchUp"
+output: html_document
+date: "2024-04-03"
+---
+
+#Set Up Environment
+```{r}
+rm(list=ls()) #clear environment
+
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(tidyverse)
+library(ggnewscale)
+library(cowplot)
+library(scales)
+library(ggpattern)
+
+#Set working directory
+wd <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Processed_Data/Rubric/"
+
+#Output directory
+Figure_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Outputs/Figures/Rubric/"
+
+#Read in Rubric Temporal Mismatch report
+MatchUp <- read.csv(paste0(wd, "Sentinel-2_Rubric_Temporal_Mismatch.csv"))
+MatchUp <- MatchUp[!is.na(MatchUp$Index),]
+MatchUp <- MatchUp[MatchUp$Relevant. == "Y",]
+MatchUp <- MatchUp %>%
+    replace_na(list(Category_jDay = 'Unreported'))
+MatchUp <- MatchUp %>%
+    replace_na(list(Category = 'Unreported'))
+row.names(MatchUp) <- NULL
+
+#Read in Rubric MAE report
+Algorithm <- read.csv(paste0(wd, "Sentinel-2_Rubric_MAE.csv"))
+Algorithm <- Algorithm[!is.na(Algorithm$MAE),]
+Algorithm <- Algorithm[,c(1,11,12)]
+```
+
+#Prep data for bar plot of match up times
+```{r}
+sortCat <- c("1 hour", "2 hours","3 hours", "4 hours", "5 hours", "6 hours", "Calendar Day","1 day", "2 days", "3 days", "4 days", "5 days", "6 days", "7 days", "2 weeks", "3 weeks", "2 years", "3 years", "4 years", "5 years", "Unreported")
+
+sortCatDF <- as.data.frame(sortCat)
+sortCatDF$value <- seq(1, nrow(sortCatDF),1)
+names(sortCatDF) <- c("Category_jDay", "value")
+
+countPivot <- MatchUp %>%
+  group_by(Category_jDay) %>%
+  summarize(count_cat = n())
+names(countPivot) <- c("Category_jDay", "Count")
+
+pivot <- merge(sortCatDF, countPivot, by = "Category_jDay", all = T)
+pivot <- pivot[order(pivot$value),]
+pivot$Count[is.na(pivot$Count)] <- 0
+row.names(pivot) <- NULL
+
+pivot$Category_Day <- c(rep("1 day", 8), sortCat[9:21])
+
+#Assign grey scale colors to eachcategory
+colorList <- c(brewer.pal(9,"Greys"))
+colorList <- c(colorList, rep(colorList[9], 11), "black")
+pivot$Color <- colorList
+
+#Break df into one day, greater than one day, and unreported for plotting purposes
+day_one <- pivot[c(1:8),]
+day_one$Index <- seq(nrow(day_one), 1, -1)
+day_one <- day_one[order(day_one$Index),]
+row.names(day_one) <- NULL
+day_one$Category_jDay = factor(day_one$Category_jDay, levels = rev(c("1 hour", "2 hours","3 hours", "4 hours", "5 hours", "6 hours", "Calendar Day","1 day")))
+
+day_rest <- pivot[c(10:nrow(pivot)-1),]
+unreported <- pivot[c(nrow(pivot)),]
+
+```
+
+#Plot bar plot of match up times
+```{r}
+gg_count <- ggplot() + 
+  geom_bar(data = day_one, aes(x = Category_Day, y = Count, fill = Category_jDay), 
+           position = "stack", 
+           stat = "identity", 
+           width = 1, 
+           color = "grey20") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title.y = element_text(size = 18),
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.spacing.y = unit(0.25, 'cm')) +
+  guides(fill = guide_legend(byrow = TRUE)) +
+  scale_fill_manual(drop=FALSE, 
+                    name = "",
+                    breaks = c(day_one$Category_jDay),
+                    labels = rev(c("1 hour", "2 hours","3 hours", "4 hours", "5 hours", "6 hours", "Calender Day","1 day")),
+                    values = c(rev(pivot$Color[1:8]), pivot$Color[9:21])) +
+  scale_y_continuous(breaks = seq(0, 40, 10), limits = c(0,40)) +
+  new_scale_fill() +
+  geom_bar(data = day_rest, aes(x = (Category_jDay), y = Count, fill = Category_jDay),
+           color = "grey20",
+           fill = "black",
+           stat = "identity", 
+           width = 1) +
+  scale_x_discrete(limits=pivot$Category_jDay[8:21], drop = F) +
+  new_scale_fill() +
+  geom_col_pattern(data = unreported, aes(x = Category_jDay, y = Count, fill = unreported$Category_jDay), 
+                   color = "grey20",
+                   pattern_fill = "black",
+                   pattern_angle = 45,
+                   pattern_density = 0.1,
+                   pattern_spacing = 0.025,
+                   pattern_key_scale_factor = 0.6) +
+  scale_fill_manual(breaks = unique(unreported$Category_jDay), 
+                    values = c("Unreported" = "white"),
+                    guide="none") +
+  scale_pattern_manual(values = c("Unreported" = "strip"),
+                       guide="none") 
+
+
+gg_count
+
+ggsave(path = Figure_filepath, filename = "rubricTemporalMismatch.png", device = "png", plot = gg_count, width = 11.5, height = 6.5, dpi = 300, units = "in")
+
+```
+
+#Plot Bar chart of match up times without a stacked 'one-day' bar
+```{r}
+gg_simple <- ggplot(data = day_one, aes(x = Category_Day, y = sum(Count))) + 
+  geom_bar(position = "stack", 
+           stat = "identity", 
+           width = 1, 
+           color = "red",
+           fill = "black",
+           size = 1.75) +
+  geom_col(data = day_rest, aes(x = Category_Day, y = Count), fill = "black") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        legend.position = "none") +
+  labs(x = "+/- Days since Sampling", y = "Count", fill = "Time Passed") +
+  scale_x_discrete(drop=FALSE) +
+  scale_y_continuous(breaks = seq(0, 40, 10), limits = c(0,40)) +
+  new_scale_fill() +
+  geom_col_pattern(data = unreported, aes(fill = unreported$Category_jDay), 
+                   color = "grey20",
+                   pattern_fill = "black",
+                   pattern_angle = 45,
+                   pattern_density = 0.1,
+                   pattern_spacing = 0.025,
+                   pattern_key_scale_factor = 0.6) +
+  scale_fill_manual(breaks = unique(unreported$Category_jDay), 
+                    values = c("Unreported" = "white"),
+                    guide="none") +
+  scale_pattern_manual(values = c("Unreported" = "strip"),
+                       guide="none") 
+
+gg_simple
+
+ggsave(path = Figure_filepath, filename = "rubricTemporalMismatchSimple.png", device = "png", plot = gg_simple, width = 7.5, height = 5.5, dpi = 300, units = "in")
+
+```
+
+#Pie Chart of One Day Breakdown
+```{r}
+#Isolate 
+pie_data <- data.frame(cbind(as.character(day_one$Category_jDay), day_one$Count))
+names(pie_data) <- c("Category", "Count")
+pie_data$Count <- as.numeric(as.character(pie_data$Count))
+pie_data$prop <-round(pie_data$Count/sum(pie_data$Count) * 100,1)
+
+pie_data <- pie_data %>%
+  arrange(desc(Category)) %>%
+  mutate(lab.ypos = cumsum(prop) - 0.5*prop)
+
+pie_data$Category <- factor(pie_data$Category, levels = c("1 hour", "2 hours","3 hours", "4 hours", "5 hours", "6 hours", "Calendar Day","1 day"))
+pie_data$Count[pie_data$Count == 0] <- NA
+
+blank_theme <- theme_minimal()+
+  theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.border = element_blank(),
+  panel.grid=element_blank(),
+  axis.ticks = element_blank(),
+  plot.title=element_text(size=14, face="bold")
+  )
+
+gg_pie <- ggplot(pie_data) +
+  geom_col(aes(x="", y=Count, fill=factor(Category)), just = 0, width = 1) +
+  coord_polar("y", start=0) +
+  scale_fill_manual(drop=FALSE,
+                    values = c(pivot$Color[1:8]),
+                    guide = guide_legend(direction = "vertical",
+                                         override.aes = list(colour = "black"))) +
+  #scale_fill_viridis_d(direction = -1, option = "D", drop=FALSE) + 
+  blank_theme +
+  theme(axis.text.x=element_blank(),
+        legend.text=element_text(size=16),
+        legend.title = element_text(size = 18),
+        legend.spacing.y = unit(0.25, 'cm')) +
+  #guides(fill = guide_legend(byrow = TRUE)) +
+  labs(fill = 'One Day Breakdown') +
+  scale_x_discrete(drop=FALSE)
+
+gg_pie
+
+ggsave(path = Figure_filepath, filename = "rubricTemporalMismatchPie.png", device = "png", plot = gg_pie, width = 5, height = 4, dpi = 300, units = "in")
+```
+
+#Plot MAE
+```{r}
+#Select only temporal mismatch studies with MAE report
+alg_match <- merge(Algorithm, MatchUp, by = "Index")
+alg_match <- alg_match[order(alg_match$Index, -abs(alg_match$MAE) ), ]
+
+#Only select additive MAE
+vals <- c("|estimated - measured|/n", "|estimated - measured|/n *notExplicit", "|estimated - measured|/n *noSum")
+alg_match <- alg_match[ alg_match$MAE_type %in% vals, ]
+
+gg_ts <- ggplot(alg_match, aes(x = Category_nHours, y = MAE)) + 
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5, size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        panel.grid.minor.y = element_blank()) +
+  geom_smooth(method='lm') +
+  labs(x = "+/- Days Since Sampling", y = "Mean Absolute Error [\u03bcg/L]") +
+  scale_y_continuous(breaks = seq(0, 40, 10)) +
+  scale_x_continuous(breaks = seq(0, 18, 2), limits = c(0,18))
+
+gg_ts
+
+ggsave(path = Figure_filepath, filename = "rubricTemporalMismatchMAE.png", device = "png", plot = gg_ts, width = 7.5, height = 5.5, dpi = 300, units = "in")
+```

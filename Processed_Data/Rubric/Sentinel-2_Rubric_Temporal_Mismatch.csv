@@ -1,0 +1,231 @@
+Index,Relevant?,Category,Category_jDay,Category_nDays,Category_nHours,Data match up time range (notes),Chl-a method,In situ methods (notes)
+144,Y,1 day,1 hour,1,0.04,1 hr,Sonde,"Hydrolab HL7 multi-parameter probes. Calibrated three times during study period. Only nighttime data used to avoid non-photochemical quanching, so hard to understand how could be within 1 hr of satellite."
+39,Y,1 day,3 hours,1,0.13,plus or minus 3 hours,"Radiometer, spec","WISPStation radiometer, spec in lab. 7 samples for Lake Trasimeno and 10 samples for Lake Garda"
+83,Y,1 day,3 hours,1,0.13,3 hour matchup,Spec,"In situ measurements were conducted on 32 distinct dates from April 2017 until June
+2019 (7 during 2017, 14 during 2018, and 11 during 2019), once, or at most twice, a month,
+depending on weather conditions. Chla EPA-445 method"
+133,Y,1 day,3 hours,1,0.13,3 hours for lakes; 30 min for Chesapeake,Spec,NA
+182,Y,1 day,3 hours,1,0.13,±3hrs,Various,"centre pixel of 3 × 3 valid pixels was used as the match-up location. Data flagged by IdePix as invalid, cloud (including ambiguous, sure, and a 2-pixel buffer) or cloud shadow, snow/ice, bright, coastline land, white and glint risk were excluded"
+185,Y,1 day,3 hours,1,0.13,<3hrs,NA,"In-situ observation data of Chl-a are obtained from four water quality
+monitoring stations maintained by Jiangxi Environmental Monitoring
+Station (JEMS)"
+191,Y,1 day,3 hours,1,0.13, +/- 3 hours,Spec,NA
+171,Y,1 day,4 hours,1,0.17,within 4h,Spec,Collected In-Situ data from the lake and extracted in-situ data from the NASA bio-Optical Marine Algorithm Dataset (NOMAD)
+192,Y,1 day,4 hours,1,0.17, +/-4 hrs,Spec,NA
+72,Y,1 day,6 hours,1,0.25,Within 6hrs,NA,NA
+1,Y,1 day,Calendar Day,1,0.5,"23 sampling campaigns over the sampling period, only tells start and stop dates",Spec,"Filter paper, spectrophotometry methods"
+9,Y,1 day,Calendar Day,1,0.5,Did not sample July - March,NA,NA
+10,Y,1 day,Calendar Day,1,0.5,NA,NA,NA
+20,N,1 day,Calendar Day,1,0.5,NA,Sonde,YSI 2012 6025 Chlorophyll probes in concentration (ug/L) and relative fluoresence unit (RFU)
+22,Y,1 day,Calendar Day,1,0.5,NA,Sonde,NA
+23,Y,1 day,Calendar Day,1,0.5,NA,Spec,NA
+24,Y,1 day,Calendar Day,1,0.5,Only used data from MAY 2017 as that was the only day that has satellite imagery. ,Radiometer,NA
+25,Y,1 day,Calendar Day,1,0.5,+/- 12 hours match up data,Spec,"Data by Great lakes environmental research laboratory: weekly water samples for turbidity, CDOM, and Chl-a"
+26,Y,1 day,Calendar Day,1,0.5,NA,Spec,NA
+31,Y,1 day,Calendar Day,1,0.5,NA,Spec,NA
+51,Y,1 day,Calendar Day,1,0.5,NA,Hot ethanol extraction,NA
+60,Y,1 day,Calendar Day,1,0.5,In situ data collected daily,Spec,"colorimetry test [13], nitrate concentration (mg/L) test [14], and turbidity test (NTU)"
+86,Y,1 day,Calendar Day,1,0.5,field radiometery and airborne measures,Spec,"Standard Method
+10200H2.b. The summed values for pheophytin corrected chlorophyll-a
+and pheophytin (i.e., a so-called measure of uncorrected chlorophyll-a)
+and abbreviated here as SUMReCHL (?g/L)). This measure of total
+chlorophyll pigment more likely aligns with the reflectance of the invivo
+chlorophyll pigments measured by the imagers."
+99,Y,1 day,Calendar Day,1,0.5,"Samples were only take on two day 22-23 July and 20 December, and just mentioned that these were dates when the satellite way passing over.",Spec,"Acetone method with spectophotometer, general water chemistry was measure in lab.  Radiance measurments were taken in the field. No sample depth was given, though it sounds like they probably took grab samples from the surface."
+122,Y,1 day,Calendar Day,1,0.5,"synchoronous radiometric data (10 minutes), 10  lab chl-a samples for instrument calibration",LiDAR,Ocean Optics USB2000+ spectrometer + LiDAR EFL-9. Chl-a ad TSM concentrations September 21 and22 2018. 
+130,Y,1 day,Calendar Day,1,0.5,NA,HPLC,NA
+136,Y,1 day,Calendar Day,1,0.5,NA,Sonde,Fluorometer attached to a CTD
+138,Y,1 day,Calendar Day,1,0.5,NA,Spec,NA
+141,N,1 day,Calendar Day,1,0.5,NA,Spec,NA
+155,Y,1 day,Calendar Day,1,0.5,NA,Spec,samples for chlorophyll a ( Chl ) determination were collected monthly as an integrated sample over the depth of the epilimnion
+159,Y,1 day,Calendar Day,1,0.5,Dates of field sampling and field data are given,Spec,NA
+169,N,1 day,Calendar Day,1,0.5,NA,NA,NA
+170,N,1 day,Calendar Day,1,0.5,NA,NA,NA
+175,Y,1 day,Calendar Day,1,0.5,NA,NA,NA
+187,Y,1 day,Calendar Day,1,0.5,Same Day,YSI,NA
+188,Y,1 day,Calendar Day,1,0.5,Same Day,YSI,NA
+199,Y,1 day,Calendar Day,1,0.5,NA,NA,NA
+14,Y,1 day,1 day,1,1,NA,Spec,NA
+18,N,1 day,1 day,1,1,Synthetic S2 data,Sonde,"extensive: Water samples for Chl-a (EPA lab), ASD spectra, in situ sensor measurements, secchi depth"
+73,Y,1 day,1 day,1,1,NA,Spec,"Water samples were filtered using GF/C
+filters (Whatman). Chlorophyll-a was extracted with ethanol (90%) at
+80 ?C for 6 h in darkness and then analyzed spectrophotometrically at
+750 and 665 nm; phaeopigment correction was carried out using a
+spectrophotometer (Shimadzu UV-3600) (Le et al., 2009a; Le et al.,
+2009b)."
+90,Y,1 day,1 day,1,1," 24 hours +/-, collected from Dec 2018-Feb 2021",Spec,"Data from National Institute of Environmental Research of the Ministry of Environment (https://water.nier.go.kr), Data Collected: Chla (mg/m3), SPM, Secchi Depth, EC. 64 lakes, 5 lagoons, 11 estuaries in SK. Has table describing lakes in detail"
+97,Y,1 day,1 day,1,1,For this study in situ samples were considered match ups if they were with in 24 hours of the satellite image.,Spec,"APHA,  1998 method, acetone extraction of material filtered on to 1 um  glass-fiber filter fluorometeric measurement"
+129,N,1 day,1 day,1,1,NA,NA,It was mentioned that there was data from two stations but in situ data was not used as part of the results.
+162,Y,1 day,1 day,1,1, +/- 1 day (not always same day),Spec,NA
+16,Y,2 days,2 days,2,2,All images were 0 day match ups to the sampling dates except one image with a  2 day mismatch,Spec,Extracted Chl-a using EPA 445.0 methos (1997) and readings taken by a lab fluorometer
+21,N,2 days,2 days,2,2,NA,NA,Two vertical profiling systems collect water quality data every hour and manual samples are taken once a month by the water supplier for the region (Seqwater)
+45,Y,2 days,2 days,2,2,NA,NA,No note of how the samples are processed
+80,Y,2 days,2 days,2,2,NA,NA,NA
+103,Y,2 days,2 days,2,2,Field data was collected during 6 sampling periods of 1-5 days spread out during this time peroid.,Spec,the National Environmental Protection Standard of the People’s Republic of China HJ 897-2017—SpectroFiguremetesc method for the determination of chlorophyll-a in water quality
+107,N,2 days,2 days,2,2,Routine Monitoring,Spec,Composite sample of everything from 0-2m
+118,Y,2 days,2 days,2,2,NA,Spec,NA
+127,Y,2 days,2 days,2,2,NA,Spec,NA
+128,Y,2 days,2 days,2,2,1 hour,Spec,All data from one station for G and 2 stations for T
+145,Y,2 days,2 days,2,2,NA,NA,"From NOAA-GLERL, but method not specified"
+8,Y,3 days,3 days,3,3,3 Days +/-,Spec,"used GLaSS dataset to ""develop empirical chl-a algorithms for different water types"" 412 data points with only a ""few match-ups with MSI"". Used Estonian National Monitoring database to ""derive seasonal dynamics of chl a"" seems like GLaSS was calibration and the ENMD was validation?"
+12,Y,3 days,3 days,3,3,"3 Days +/-, samples taken 2-3 times per year. Total samples take: Chapala n = 44, Cuitzeo n = 7, Patzcuaro n = 39, Yuriria n = 11, Catemaco n = 7",Spec,field measurements (2013–2019) from the Mexican national water quality monitoring system (RNMCA)
+13,Y,3 days,3 days,3,3,NA,NA,"Global dataset so there was no details on sampling given. The testing used data from March 2021 - March 2023, which is how I know they used data from all months"
+37,Y,3 days,3 days,3,3,3 hours for turbid lakes with fast changes; 3 days for stable lakes,Spec,"""Surface water (depth: ~0.5 m)"""
+40,Y,3 days,3 days,3,3,NA,"Spec, HPLC ",11 stations that use different chl-a extraction/aalysis techniques
+46,Y,3 days,3 days,3,3,NA,NA,No note of how the samples are processed
+47,Y,3 days,3 days,3,3,NA,NA,No note of how the samples are processed
+68,Y,3 days,3 days,3,3,NA,NA,Unidentified method from Lithuanian Environmental Protection Agency under the Ministry of Environment
+78,Y,3 days,3 days,3,3,"August 2018, December 2019, June 2020, and November 2020",Spec,NA
+3,N,4 days,4 days,4,4,"4 days +/- (S2 on July 19, 20, 21, 24)",NA,"YSI (pH, temp, phycocyanin, chlorophyll, DO, and conductivity). Research cruise between July 15-24 2022. "
+29,Y,4 days,4 days,4,4,NA,WV3,No ground observations- validation via comparison with high res WorldView products
+77,Y,4 days,4 days,4,4,really only 3 months,Spec,"American Public
+Health Association (APHA)"
+110,Y,4 days,4 days,4,4,"2 exact match ups, 10 dates that ranged from 1 year to 4 days different from the closest in situ date",Spec,NA
+198,Y,4 days,4 days,4,4,"In situ sampling took place during S2 overpass, hydrological stations used the 4 day range",Sonde,In-situ dates: 04-2020 to 05-2020 with a YSI-EXO2. Envi Protection Department of Hong Kong has three hydrological stations that also measure chl-a
+2,Y,5 days,5 days,5,5,"For two sampling days same day match- up, for Janurary 26th, - 4 days match-up",Sonde,"3 sampling dates (Oct 6th 2018, Jan 26th 2019, July 5 2019). Chl-a, CDOM, and turbidity lab samples. Field spectroscopy measurements"
+11,Y,5 days,5 days,5,5,NA,Spec,"situ chl-a collection were used, provided by the Ceará Water Resources Management Company"
+76,Y,5 days,5 days,5,5,N/A,Spec,"a known
+volume of raw water samples (100–300 mL) was filtered
+through glass-fiber filters (Whatman GF/C, England), then
+Chl-a was extracted using 90% acetone overnight in the dark at
+4 °C. After centrifugation, Chl-a concentration was measured at
+630–750 nm using a spectrophotometer (UV-VIS, Harch, 500)
+and calculated using the trichromatic equations (APHA, 2005)."
+117,Y,5 days,5 days,5,5,Field sampling and Satellite image dates were given,Spec,NA
+134,N,5 days,5 days,5,5,NA,Sonde,NA
+100,N,7 days,7 days,7,7,Found the closest cloud free image from with in the time range.,Spec,"UV-2600PC spectrophotometer (Shimadzu, Kyoto, Japan), and total phosphorus (TP) concentrations were determined using a continuous flow analyzer (SKALAR, San Plus System, the Netherlands)"
+101,N,7 days,7 days,7,7,In situ samples collected April-October during this period.,Spec,NA
+142,Y,2 weeks,2 weeks,8,8,Mostly 1-2 days,Spec,"Phyto-PAM—Multiple Excitation Wavelength Phytoplankton & Photosynthesis Analyzer fluorimeter (in lab), validated with subset on spectrophotometer"
+160,Y,2 weeks,2 weeks,8,8, This paper lists out the field sampling dates and satellite imagery dates average of 3.2 day match up.,Sonde,measurements were made in the field.
+125,Y,2 weeks,2 weeks,9,9,Most of the insitu samples were collected the same day as satellite images.,Spec,Samples taken nearshore.  Also there was not a lot of information provided on the sampling besides that it was conducted during four different periods.
+146,Y,2 weeks,2 weeks,9,9,Mostly up to 6 days,Spec,NA
+108,N,2 weeks,2 weeks,11,11,There is a table with the sampling dates and the dates from insitu and corresponding dates for Sentinel data.,Spec,I am assuming it is spec since they use inlab methods they cited a standard method for china but I couldn't find the document referenced.
+102,Y,2 weeks,2 weeks,12,12,Field data collected from 2017-2019,Spec,"Water samples for Chl-a, TN, TP and syncronous water quality parameters measured (pH, turbidity, conductivity)"
+63,Y,2 weeks,2 weeks,14,14,Samples within 2 weeks of satellite overpass,NA,Chlorophyll a data were analysed by the Irish EPA from samples collected by local authorities.
+105,Y,2 weeks,2 weeks,14,14,"“Water Quality Technical Regulation on the Design of Sampling Programmes” (HJ 495–2009), eight surface routine monitoring points were set up at five river sections (NY3, SG3, ZW8, BS2, HJ2), river confluence (PZ1, SG1) and reservoir dam (PZ4). Six fieldworks were carried out on 18 November 2018, 12 October 2019, 18 May 2020, 27 July 2020, 14 November 2020, and 28 March 2021, and a total of 48 sites",Spec,"RF-5301 spectrophotometer, from surface water."
+172,Y,2 weeks,2 weeks,14,14,"In situ collected Aug 2-18, Satellite collected on Aug 11, 14, 17",Spec,No in situ reflectance measurements 
+176,Y,3 weeks,3 weeks,18,18,S2 images from 22 & 24 june 2020. Field from 06/18-07/12,Spec,NA
+113,Y,3 weeks,3 weeks,21,21,NA,Spec,NA
+180,Y,2 years,2 years,596,596,"2014 data was used for calibration, 2016 data was used for validation. S2 Images from August 2016, Dec 2016, June 2017, Aug 2017, March 2018",Spec,spectrophotometric chl-a measurements and radiometric data
+94,Y,4 years,4 years,1460,1460,Sampling between 2011-2013.  S2 imagery from August 11 and 14 2015,Spec,"Water reflectance measurements via Ramses sensors. CDOM, TSS, and phytoplankton pigments measurements in laboratory"
+177,Y,4 years,4 years,1460,1460,"Only 2 dates for insitu data for calibration + validation, then 4 years and 3 seasons were pulled of S2 images",Spec,NA
+56,Y,4 years,4 years,1465,1465,"1 Image on 1 day of the dataset, but the full insitu dataset goes back 4 years prior.",Spec,NA
+41,Y,4 years,4 years,1534,1534,"Res collected between 2015-2018, quasi-synchronous insitu data (data collected over a 7 hour period) for Res. Satellite photo from 10-20-2019 for validation data",Spec,"SD, Salinity via YSI, In situ spectral datasets at water surface, chl-a"
+43,Y,5 years,5 years,1614,1614,"Field Data collection on May 10 and October 18 2012, and May 7 2013. S2 data pulled from October 10 2016, only 1 image pulled",Spec,"Water above syrface spectra measured using HyperSAS and HyperOCR. a(CDOM440), Chl-a, DOC lab measurments "
+4,N,NA,NA,NA,NA,NA,NA,NA
+5,N,NA,NA,NA,NA,NA,NA,NA
+6,Y,NA,NA,NA,NA,Did not sample Dec - March,"Spec, Sonde, Radiometer","Spectrophotometric HPLC, fluorescence from sondes on AHFM bouys, high-frequency
+hyperspectral above-water radiometer (WISPStation), Lake Saadjärv: measurements at surface (0.5m) only and Lake Võrtsjärv: measurements at the surface and then again every 0.5m"
+7,N,NA,NA,NA,NA,NA,NA,NA
+15,N,NA,NA,NA,NA,NA,NA,NA
+17,N,NA,NA,NA,NA,NA,NA,NA
+19,N,NA,NA,NA,NA,NA,NA,NA
+27,Y,NA,NA,NA,NA,NA,"Radiometer, Spec","WISPStation radiometer, spec in lab"
+28,N,NA,NA,NA,NA,NA,NA,"CDOM, Chl-a, DOC, SD, background data (ex. pH)"
+30,N,NA,NA,NA,NA,Synthetic S2 data,NA,NA
+32,N,NA,NA,NA,NA,NA,NA,NA
+33,N,NA,NA,NA,NA,NA,NA,NA
+34,N,NA,NA,NA,NA,NA,NA,NA
+35,N,NA,NA,NA,NA,NA,NA,NA
+36,N,NA,NA,NA,NA,NA,NA,NA
+38,N,NA,NA,NA,NA,NA,NA,NA
+42,N,NA,NA,NA,NA,NA,NA,NA
+44,N,NA,NA,NA,NA,NA,NA,NA
+48,N,NA,NA,NA,NA,NA,NA,NA
+49,N,NA,NA,NA,NA,NA,NA,NA
+50,N,NA,NA,NA,NA,NA,NA,NA
+52,N,NA,NA,NA,NA,NA,NA,NA
+53,N,NA,NA,NA,NA,NA,NA,NA
+54,N,NA,NA,NA,NA,NA,NA,NA
+55,N,NA,NA,NA,NA,NA,NA,NA
+57,N,NA,NA,NA,NA,NA,NA,NA
+58,N,NA,NA,NA,NA,NA,NA,NA
+59,Y,NA,NA,NA,NA,NA,NA,Chlorophyll data from the Voluntary lakes monitoring network (VLMN)
+61,N,NA,NA,NA,NA,NA,NA,NA
+62,N,NA,NA,NA,NA,NA,NA,NA
+64,N,NA,NA,NA,NA,NA,NA,NA
+65,N,NA,NA,NA,NA,NA,NA,No field Data
+66,N,NA,NA,NA,NA,NA,NA,NA
+67,N,NA,NA,NA,NA,NA,NA,NA
+69,N,NA,NA,NA,NA,NA,NA,NA
+70,Y,NA,NA,NA,NA,NA,Sonde,"chlorophyll-a sensor (TAL-PC, YSI, USA)"
+71,N,NA,NA,NA,NA,NA,NA,NA
+74,N,NA,NA,NA,NA,NA,NA,NA
+75,N,NA,NA,NA,NA,NA,Sonde,"Hydrolab DS5 (OTT Hydromet) multiparameter sonde, Utah Division of Water Quality (UDWQ) measured using YSI EXO"
+79,Y,NA,NA,NA,NA,August 2015 and November 2016 only,NA,N/A
+81,N,NA,NA,NA,NA,NA,NA,NA
+82,Y,NA,NA,NA,NA,NA,Spec,"Near-surface water data on temperature, turbidity and chlorophyll a
+obtained from the monitoring database of the National Network
+of Minimum Lake Control (Red Nacional Mínima de Control de
+Lagos) of the General Water Directorate (Dirección General de Aguas DGA) of the Ministry of Public Works of Chile (http://www.dga.cl/
+servicioshidrometeorologicos/) were used for field verification."
+84,N,NA,NA,NA,NA,NA,NA,NA
+85,N,NA,NA,NA,NA,NA,NA,NA
+87,Y,NA,NA,NA,NA,NA,Sonde,water quality sensor AP-7000
+88,N,NA,NA,NA,NA,NA,"HPLC, Spec",NA
+89,Y,NA,NA,NA,NA,NA,Sonde,AlgaeTorch instrument by bbe Moldaenke
+91,N,NA,NA,NA,NA,NA,NA,NA
+92,N,NA,NA,NA,NA,NA,NA,NA
+93,N,NA,NA,NA,NA,NA,NA,NA
+95,N,NA,NA,NA,NA,NA,NA,NA
+96,N,NA,NA,NA,NA,NA,NA,NA
+98,N,NA,NA,NA,NA,8-13 of November,NA,NA
+104,Y,NA,NA,NA,NA,"3 cruises 11-2013, 5-2014, 7-2014, and from bouy's 6-2019 to 4-2020.  For match up time they only say valid pairs.","Spec, Sonde","The samples from the cruise were measured in lab Shimadzu UV-2550 spectrophotometer, and the bouy measurements were from a YSI EXO2 7-channel multiparameter sonde.  Samples were taken along the water column."
+106,N,NA,NA,NA,NA,Sampled Monthly,NA,NA
+109,N,NA,NA,NA,NA,NA,NA,NA
+111,N,NA,NA,NA,NA,NA,NA,NA
+112,N,NA,NA,NA,NA,NA,NA,NA
+114,Y,NA,NA,NA,NA,No Data match up time was given besides the field sampling date and when the satellite data was accessed.,Spec,A sampling depth is not given but it was probably near the surface.
+115,N,NA,NA,NA,NA,NA,NA,NA
+116,N,NA,NA,NA,NA,NA,NA,"SpecWa Dataset: Karlsruhe, Germany, during the years 2018 and 2019, 3685 datapoints with the spectral data in the range of 389nm to 910nm and the respective chlorophyll a value as a reference"
+119,N,NA,NA,NA,NA,NA,Spec,NA
+120,N,NA,NA,NA,NA,NA,NA,NA
+121,N,NA,NA,NA,NA,NA,NA,No in situ samples
+123,N,NA,NA,NA,NA,NA,NA,NA
+124,Y,NA,NA,NA,NA,"In situ samples were collected every 2 weeks the data match up time was not mentioned, or the units of chl a.",NA,No in situ method were provided besides mention on routine sampling.
+126,Y,NA,NA,NA,NA,NA,NA,This study did not collect in situ samples instead they compared their sentinel 2 data to a NOAA VIIRS Soumi 
+131,N,NA,NA,NA,NA,NA,NA,NA
+132,N,NA,NA,NA,NA,NA,NA,NA
+135,N,NA,NA,NA,NA,NA,NA,NA
+137,N,NA,NA,NA,NA,NA,NA,NA
+139,N,NA,NA,NA,NA,NA,NA,NA
+140,N,NA,NA,NA,NA,NA,NA,NA
+143,Y,NA,NA,NA,NA,"""Coincides"", but Fig. 2 appears to show non-same-day timing. Says 4 days for LAI, but not specific for chl a",Spec,NA
+147,N,NA,NA,NA,NA,NA,NA,NA
+148,N,NA,NA,NA,NA,NA,NA,NA
+149,N,NA,NA,NA,NA,No times were mentioned at any point in the study,Spec,Samples were taken from sampling stations.
+150,N,NA,NA,NA,NA,NA,NA,NA
+151,N,NA,NA,NA,NA,NA,NA,NA
+152,Y,NA,NA,NA,NA,NA,Sonde,Hydrolab Data Sonde
+153,Y,NA,NA,NA,NA,NA,Spec,NA
+154,N,NA,NA,NA,NA,NA,NA,NA
+156,N,NA,NA,NA,NA,NA,NA,in situ data from the monitoring program of the Environment General Subdivision of the regional government
+157,N,NA,NA,NA,NA,No field measurements were taken,NA,No field data was collected
+158,N,NA,NA,NA,NA,NA,NA,NA
+161,Y,NA,NA,NA,NA,Not specified but it looks like all samples were taken on one day from multiple places in the water body,Spec,Standard Method
+163,N,NA,NA,NA,NA,NA,NA,NA
+164,N,NA,NA,NA,NA,NA,NA,NA
+165,N,NA,NA,NA,NA,NA,NA,NA
+166,Y,NA,NA,NA,NA,NA,Spec,"ASD-FR, ASD FieldSpec HandHeld 2, Ocean Optics HR4000-UV-NIR"
+167,N,NA,NA,NA,NA,NA,NA,NA
+168,N,NA,NA,NA,NA,NA,NA,NA
+173,N,NA,NA,NA,NA,NA,Spec,NA
+174,N,NA,NA,NA,NA,NA,NA,NA
+178,N,NA,NA,NA,NA,NA,NA,NA
+179,Y,NA,NA,NA,NA,NA,NA,NA
+181,N,NA,NA,NA,NA,NA,NA,NA
+183,N,NA,NA,NA,NA,N,Spec,"Chla pigments were extracted using
+90% ethanol at 80 °C from the collected water samples. Chla
+concentrations were calculated from the absorption coefficients
+at 665 and 750 nm."
+184,N,NA,NA,NA,NA,NA,NA,NA
+186,Y,NA,NA,NA,NA,Simulated data using in situ Rrs from radiometer,Spec,"In situ Chla for China was extracted with ethanol and then
+analyzed using a spectrophotometer (Parsons, 1984)."
+189,Y,NA,NA,NA,NA,NA,Sonde,EXO multiparameter sonde (a multi-parameter water quality monitor developed by YSI).
+190,N,NA,NA,NA,NA,NA,NA,NA
+193,N,NA,NA,NA,NA,NA,NA,NA
+194,N,NA,NA,NA,NA,NA,NA,NA
+195,N,NA,NA,NA,NA,NA,NA,NA
+196,N,NA,NA,NA,NA,NA,NA,NA
+197,N,NA,NA,NA,NA,NA,NA,NA
+NA,,NA,NA,NA,NA,NA,NA,NA

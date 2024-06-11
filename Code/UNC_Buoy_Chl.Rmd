@@ -1,0 +1,155 @@
+---
+title: "UNC_Buoy_Chl"
+output: html_document
+date: "2024-03-25"
+---
+#Set Up Environment
+```{r}
+rm(list=ls()) #clear environment
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(lubridate)
+library(openair)
+library(data.table)
+library(RColorBrewer)
+library(tidyverse)
+
+#Set working directory
+wd <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Raw_Data/UNC_Buoys/"
+
+#Output directories
+Figure_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Outputs/Figures/Chlorophyll/"
+
+Table_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Outputs/Tables/Chlorophyll/"
+
+Processed_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Processed_Data/Chlorophyll/"
+```
+
+#Aggregate Chlorophyll by 30 min intervals
+```{r}
+#Split by location and recombine for ease of aggregation
+NH_Buoy <- read.csv(paste0(Processed_filepath, "NH_Filtered_Chl.csv"))
+HR_Buoy <- read.csv(paste0(Processed_filepath, "HR_Filtered_Chl.csv"))
+WO_Buoy <- read.csv(paste0(Processed_filepath, "WO_Filtered_Chl.csv"))
+
+#Tag with buoy location
+NH_Buoy$Loc <- 1
+HR_Buoy$Loc <- 2
+WO_Buoy$Loc <- 3
+
+#Combine into one dataframe
+Buoy_data <- as.data.frame(rbind(HR_Buoy, NH_Buoy, WO_Buoy))
+Buoy_data <- Buoy_data[,c(1,2,6,8,9,11)]
+
+Buoy_data$Datetime <- paste(Buoy_data$date, "", Buoy_data$time)
+Buoy_data$DT <- parse_date_time(as.character(Buoy_data$Datetime), order = "%m/%d/%y %H:%M:%S", tz = 'EST') 
+
+#Aggregate by mean of 30 min intervals
+Chl_data_30min <- Buoy_data %>%
+  group_by(Datetime=floor_date(DT, '30 min')) %>%
+  summarize(mean_chl_mgL=mean(chlorophyl_mgL), 
+            sd_chl_mgL=sd(chlorophyl_mgL),
+            mean_depth_m=mean(depth_m),
+            mean_turbitity_ntu=mean(turbitiy_ntu),
+            loc=mean(Loc))
+
+#Redefine location
+NH <- Chl_data_30min[Chl_data_30min$loc == 1,]; NH$loc <- "jlnewhope"
+HR <- Chl_data_30min[Chl_data_30min$loc == 2,]; HR$loc <- "jlhaw"
+WO <- Chl_data_30min[Chl_data_30min$loc == 3,]; WO$loc <- "jlwhiteoak"
+
+Chl_data_30min <- as.data.frame(rbind(NH, HR, WO))
+
+#Export table
+write.csv(Chl_data_30min, file = paste0(Processed_filepath, "chlData30min.csv"), row.names = F)
+
+rm(Buoy_data, HR_Buoy, NH_Buoy, WO_Buoy, HR, NH, WO)
+```
+
+#Daily Chlorophyll Stats
+```{r}
+#Stats by Buoy
+Chl_data_30min$Date <- as.Date(Chl_data_30min$Datetime, format = "%d/%m/%Y")
+
+Daily_chl_max <- aggregate(Chl_data_30min$mean_chl_mgL, by = list(Chl_data_30min$Date, Chl_data_30min$loc), max)
+Daily_chl_min <- aggregate(Chl_data_30min$mean_chl_mgL, by = list(Chl_data_30min$Date, Chl_data_30min$loc), min)
+Daily_chl_mean <- aggregate(Chl_data_30min$mean_chl_mgL, by = list(Chl_data_30min$Date, Chl_data_30min$loc), mean)
+Daily_chl_count <- Chl_data_30min %>% count(Date, loc)
+
+Range_buoy <- as.data.frame(cbind(Daily_chl_max, Daily_chl_min$x, Daily_chl_mean$x, Daily_chl_count$n))
+names(Range_buoy) <- c('Date',"Loc", 'Daily_max_chl', 'Daily_min_chl', 'Daily_mean_chl', "Daily_n_obs_chl")
+Range_buoy$Daily_range_chl <- Range_buoy$Daily_max_chl - Range_buoy$Daily_min_chl
+
+#Export table
+write.csv(Range_buoy, file = paste0(Table_filepath, "chlStatsDaily.csv"), row.names = F)
+
+Range_buoy$month_name <- format(Range_buoy$Date,"%B")
+Range_buoy$year <- as.numeric(format(Range_buoy$Date,"%Y"))
+Range_buoy$day <- as.numeric(format(Range_buoy$Date,"%d"))
+
+rm(Daily_chl_max, Daily_chl_mean, Daily_chl_min)
+```
+
+# Daily Chloropyll Time Series
+```{r}
+#Split by season
+JJA <- c("June", "July", "August")
+SON <- c("September", "October", "November")
+DJF <- c("December", "January", "February")
+MMA <- c("March", "April", "May")
+
+makeBlank <- function(year){
+  Blank <- data.frame(matrix(ncol = ncol(Range_buoy), nrow = 12))
+  names(Blank) <- names(Range_buoy)
+  Blank$month_name <- c(unlist(list(JJA, SON, DJF, MMA)))
+  Blank$year <- year
+  return(Blank)
+}
+
+Available_years <- unique(Range_buoy$year)
+Blank_years <- lapply(Available_years,makeBlank)
+Blank_df <- do.call(rbind, Blank_years)
+
+Range_buoy <- as.data.frame(rbind(Range_buoy, Blank_df))
+
+Seasons <- c("Summer", "Fall", "Winter", "Spring")
+Summer <- Range_buoy[Range_buoy$month_name %in% JJA,]
+Fall <- Range_buoy[Range_buoy$month_name %in% SON,]
+Winter <- Range_buoy[Range_buoy$month_name %in% DJF,]
+Spring <- Range_buoy[Range_buoy$month_name %in% MMA,]
+
+seasonAll <- list(Summer, Fall, Winter, Spring)
+
+Available_years <- unique(Summer$year)
+
+for (s in 1:length(Seasons)){
+  Season <- Seasons[s]
+  SeasonDF <- as.data.frame(seasonAll[s])
+  Available_years <- unique(SeasonDF$year)
+
+  for (i in 1:length(Available_years)){
+    Range_year <- SeasonDF[as.numeric(SeasonDF$year) == Available_years[i],]
+    ind <- (colSums(is.na(Range_year)) == nrow(Range_year))
+    
+    if (ind[[1]] == FALSE){
+      ts_year <- ggplot(data=na.omit(Range_year), aes(day, Daily_mean_chl, group = interaction(factor(month_name), factor(Loc)))) + 
+        geom_line(aes(colour = factor(Loc))) + 
+        geom_point(aes(colour = factor(Loc)), size = 1) +
+        geom_errorbar(aes(ymin=Daily_min_chl, ymax=Daily_max_chl, colour = factor(Loc)), width=.5) +
+        facet_wrap(~month_name, ncol=1, strip.position = "right", drop = F) +
+        labs(y= "Chlorophyll-a [mg/L]", x = "Day of Month", color = "Buoy Location") +
+        theme(axis.text.x = element_text(angle = 0, vjust = 1, hjust=0.5), 
+              panel.grid.minor = element_blank(),
+              plot.title = element_text(hjust = 0.5)) + 
+        scale_color_manual(breaks = c("jlhaw",  "jlnewhope", "jlwhiteoak"),
+                           values= c("#E41A1C", "#377EB8", "#4DAF4A")) +
+        ggtitle(paste0("Chlorophyll ", Seasons[s], " ", Available_years[i]," Time-Series"))
+      
+      ggsave(filename=paste0(Seasons[s], "_", Available_years[i],"_buoyChlTimeSeries.png"), plot = ts_year, device = "png", path = paste0(Figure_filepath, "Daily_TimeSeries/", Season, "/"), width = 6, height = 5, dpi = 300, units = "in")
+    }
+  }
+}
+
+```

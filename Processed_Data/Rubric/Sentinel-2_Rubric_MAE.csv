@@ -1,0 +1,218 @@
+Index,Lake Name,Algorithms,Alg Key,Band Product,Atm corrections,Chl-a Alg,R2,RMSE,Bias,MAE,MAE_type,Bias_mult,MAE_mult,MAPE,NRMSE,RAE,RRMSE,RMSLE,Scatter Plot? (Y/N),Outlier removed? (Y/N),Spatial figure (Y/N),Temporal? (Y/N)
+1,Qaraoun Reservoir,B5/B4,A,Rrs,Sen2cor,ea*A+b,0.18,146.7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+1,Qaraoun Reservoir,(1/B4-1/B5)*B6,E,Rrs,Sen2cor, ea*E+b,0.12,146.9,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+1,Qaraoun Reservoir,B3×B4+B5 +B6,H,Rrs,Sen2cor,ea*B3+b*B4+c*B5+d*B6+e,0.38,129.8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+1,Qaraoun Reservoir,SVR,I,Rrs,Sen2cor,NA,0.73,95.99,-14.31,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+1,Qaraoun Reservoir,RF,K,Rrs,Sen2cor,NA,0.86,80.77,-14.61,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+1,Qaraoun Reservoir,(B5? B4)/(B5+ B4),N,Rrs,Sen2cor,ea*N+b,0.21,147.3,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+1,Qaraoun Reservoir,MARS,O,Rrs,Sen2cor,NA,0.49,119.53,-16.31,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+1,Qaraoun Reservoir,MLR,P,Rrs,Sen2cor,ea-b*B4+c*B5,0.42,126.5,-19.4,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+1,Qaraoun Reservoir,B4-(B5+B6)/2,Q,Rrs,Sen2cor,ea*Q+b,0.36,133.9,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+2,King Talal Reservoir,B5/B4,A,Rrs,DOS,aebA,NA,29.65,-5.72,19.12,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+2,King Talal Reservoir,1/(B4*B5),B,Rrs,DOS,aebB,NA,12.9,-0.5,9.52,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+2,King Talal Reservoir,1/(B4*B6),C,Rrs,DOS,aebC,0.896,14.52,1.2,10.98,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+6, Võrtsjärv,MCI,M,NA,NA,a*M+b,0.39,NA,1.32,1.45,10^|log10(estimated)-log10(observed)|/n,NA,NA,NA,NA,NA,NA,NA,Y,Y,N,N
+6,Saadjärv,C2RCC neural network Chl-a product,S,NA,C2RCC,a(S)+b,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,y,N,N
+8,Vesijärvi,B5/B4,A,?w,C2RCC ,a*A+b,0.97,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+8,Peipsi,1/B4-1/B5,CQ,?w,C2RCC ,a*S+b,0.44,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+8,Võrts-järv,(1/B4-1/B5)*B7,F,?w,C2RCC ,a*F+b,0.93,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+8,Multiple,MCI,M,?w,C2RCC ,a*M+b,0.26,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+8,Betuwe,MCI,M,?w,C2RCC ,a*M+b,0.83,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+8,Garda,(B2-B4)/(B3-B4),U,?w,C2RCC ,a*U+b,0.25,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+8,Mag-giore,B2/B1,V,?w,C2RCC ,a*V+b,0.31,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+9,Balik Lake,B5/B4,A,Rrs,POLYMER,a(A)+b(A)+c,0.88,6.71,NA,5.54,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,Y
+9,Balik Lake,SVR,I,Rrs,POLYMER,NA,0.9,3.16,NA,2.65,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,Y
+9,Balik Lake,MDN,J,Rrs,POLYMER,NA,0.91,3.11,NA,2.61,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,Y
+9,Balik Lake,2DCNN ,T,Rrs,POLYMER,NA,0.93,3.04,NA,2.45,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,Y
+9,Balik Lake,3DCNN ,T,Rrs,POLYMER,NA,0.95,2.87,NA,2.21,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,Y
+10,Balik Lake,"Extended Fourier Attribute Lineages, Gausian Processes",AN,NA,POLYMER,NA,0.86,11.31,NA,8.1,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,N
+11,Multiple,(1/B4-1/B5)*B6,E,TOA,TOA,a*E+b,0.77,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,Y,Y
+12,Chapala Lake,ELM,AM,Rrs,C2RCC,NA,0.24,2.68,NA,1.51,|estimated - measured|^2/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+12,Cuitzeo Lake,ELM,AM,Rrs,C2RCC,NA,0.98,0.92,NA,0.76,|estimated - measured|^2/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+12,Patzcuaro Lake,ELM,AM,Rrs,C2RCC,NA,0.21,25.91,NA,10.15,|estimated - measured|^2/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+12,Yuriria Lake,ELM,AM,Rrs,C2RCC,NA,0.81,4.85,NA,13.57,|estimated - measured|^2/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+12,Catemaco lake,ELM,AM,Rrs,C2RCC,NA,0.95,7.97,NA,5.14,|estimated - measured|^2/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+13,Global,ELM,AM,Rrs,6S,NA,0.53,33.61,NA,13.53,|estimated - measured|^2/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+14,Koka Reservoir,B5/B4,A,NA,ACOLITE,A,0.87,9,NA,6.9,|estimated - measured|/n *noSum,NA,NA,NA,NA,NA,NA,NA,Y,Y,Y,Y
+16,Lanalhue Lake,MLR,P,TOA,Sen2cor,aB2 + bB3 + cB5 + dB6 + eB8A + fB11 + gB12 + h,0.91,3.31,NA,2.74,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+16,Lanalhue Lake,MLR,P,BOA,Sen2cor,aB2 + bB3 + cB4 + dB5 + eB6 + fB8A + gB11 + hB12 + i ,0.98,4.98,NA,3.67,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+16,Lanalhue Lake,MLR,P,TOA,Sen2cor,aB2 + bB3 + cB4 + dB5 + eB7,0.96,2.52,NA,2.25,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+16,Lanalhue Lake,MLR,P,BOA,Sen2cor,aB3 + bB4 + cB5 + dB6 + eB7 + fB11 + gB12,0.94,2.68,NA,1.91,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+18,Harsha Lake,B5/B4,A,NA,NA,a*A+b,0.799,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+18,Harsha Lake,(1/B4-1/B5)*B6,E,NA,NA,a*E+b,0.692,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+18,Harsha Lake,(B5-B4)/(B5+B4),N,NA,NA,a*N+b,0.794,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+18,Harsha Lake,B3-B4+B2-B4,W,NA,NA,a*W+b,0.358,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+22,Ganga River,MLP,AF,NA,Sen2cor,NA,0.96,NA,NA,NA,NA,NA,NA,3.73,NA,NA,NA,NA,Y,N,Y,N
+22,Ganga River,(B5+B3)/B2,BA,NA,Sen2cor,NA,0.69,NA,NA,NA,NA,NA,NA,20.8,NA,NA,NA,NA,Y,N,Y,N
+22,Ganga River,RBF,BB,NA,Sen2cor,NA,0.98,NA,NA,NA,NA,NA,NA,2.42,NA,NA,NA,NA,Y,N,Y,N
+23,Lake Dobczyce,paper specific single wavelength model,CX,Lake Bottom reflectance,Lambert-beer equation,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+24,Paranoa Lake,IIMIW,BC,TOA,NA,NA,0.86,4.63,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+25,Lake Erie,(1/B4-1/B5)*B7,F,Rrs,ACOLITE,aF+b,0.86,14.60%,-7.13,NA,NA,NA,NA,NA,14.60%,NA,NA,NA,Y,N,N,N
+25,Lake Erie,(B5-B4)/(B5+B4),N,Rrs,ACOLITE,a+bN+cN2,0.89,14.79%,-9.28,NA,NA,NA,NA,NA,21.70%,NA,NA,NA,Y,N,N,N
+25,Lake Erie,G99,X,Rrs,ACOLITE,NA,0.92,9.80%,-3.3,NA,NA,NA,NA,NA,6.67%,NA,NA,NA,Y,N,N,N
+26,"Mulargia Reservoir, Aposelemis Reservoir",MIP,BD,NA,MIP,NA,NA,5.11,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y,Y
+27,Lake Trasimeno,BOMBER,AY,Rrs,6SV,NA,0.97,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,Y
+29,Lake Chad,B5/B4,A,BOA,"FLAASH, QUAC",aA+b,0.67,8.5,NA,NA,NA,NA,NA,NA,NA,5.06,NA,NA,Y,N,N,N
+29,Lake Chad,(1/B4-1/B5)*B8b,D,BOA,"FLAASH, QUAC",aD+b,0.95,2.8,NA,NA,NA,NA,NA,NA,NA,1.7,NA,NA,Y,N,Y,N
+29,Lake Chad,(B5-B4)/(B5+B4),N,BOA,"FLAASH, QUAC",aN+b,0.62,9.04,NA,NA,NA,NA,NA,NA,NA,6.6,NA,NA,Y,N,N,N
+29,Lake Chad,B3-(B4+B2-B4),W,BOA,"FLAASH, QUAC",aW+b,0.74,0.75,NA,NA,NA,NA,NA,NA,NA,5.3,NA,NA,Y,N,N,N
+31,Mirim Lagoon,B2+(B3/B2)+(B4/B8)+(B3/B8),BE,Rrs,Sen2cor,aB2 + b(B3/B2) + c(B4/B8) + d(B3/B8) + e,0.65,7.79,NA,0.13,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+37,Multiple,MDN,J,Rrs,ACOLITE,NA,NA,NA,NA,NA,NA,NA,NA,31.40%,NA,NA,NA,NA,N,NA,N,N
+39,Lake Garda,BOMBER,AY,Rrs,6SV,NA,NA,NA,NA,0.49,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+39,Lake Trasimeno,BOMBER,AY,Rrs,6SV,NA,NA,NA,NA,1.16,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+40,Buffalo Pound Lake,SVR,I,Rrs,ACOLITE,NA,0.66,13.96,NA,NA,NA,NA,NA,31.5,NA,NA,NA,NA,Y,Y,Y,Y
+41,"Hedi Reservoir, Gaozhou Reservoir",(1/B4-1/B5)*B6,E,Rrs,NA,aE+b,0.26,13.85,NA,11.87,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+41,"Hedi Reservoir, Gaozhou Reservoir",GA-ANN,Z,Rrs,NA,NA,0.91,4.41,NA,3.4,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+43,Lake Huron,B5/B4,A,Rrs,Sen2cor,aAb,0.49,9.972,-0.116,NA,NA,NA,NA,NA,NA,NA,48.47%,NA,Y,N,N,N
+43,Lake Huron,NN,Y,Rrs,Sen2cor,NA,0.95,3.127,0.77,NA,NA,NA,NA,NA,NA,NA,10.40%,NA,Y,N,Y,N
+45,"Agondian Reservoir, Chengcing Lake, and Fongshan Reservoir",B3/B2,BS,Rrs,Sen2cor,B3/B2,NA,6.49,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+45,"Tsengwen Reservoir, Nanhua Reservoir, Wushantou Reservoir",FLH,W,Rrs,Sen2cor,(Rrs(B560) - Rrs(B665)) - (Rrs(B665) - Rrs(B490)) x (?4 - ?3) / (?3 - ?1),NA,0.435,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,Y,N
+46,"Agongdian Reservoir, Chengcing Reservoir, Fengshan Reservoir",RF,K,Rrs,Sen2cor,NA,0.96,2.963,NA,2.268,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,NA,Y,N
+47,"Shimen Reservoir, Baoshan Reservoir, Yongheshan Reservoir, Mingde Reservoir,
+Liyutan Reservoir, Tsengwen Reservoir,
+Wushantou Reservoir, Chingmien Reservoir, Chengcing Reservoir, Agongdian Reservoir,
+ Fengshan Reservoir",RF,K,NA,Sen2cor,NA,0.87,6.99,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,Y,Y
+51,"Luhunhu Reservoir, Xiaolangdi Reservoir, Suyuhu Reservoir, Danjiangkou Reservoir",2 Band - hybrid,BR,Rrs,Rrs = (R(?)-min(RNIR:RSWIR))/?,Type 1: Chl-a = a(B4/B2)^2+b(B4/B2)+c; Type 2: Chl-a = a(B5/B3)^2+b(B5/B3)+c; Type 3: Chl-a = a(B8/B4)^2+b(B8/B4)+c,0.85,2.93,-0.75,NA,NA,NA,NA,32.42,NA,NA,NA,NA,Y,N,Y,N
+56,Salto Grande Reservoir,(B3-B4)/(B3+B4),AO,NA,QUAC ,ea*AO+b,0.72,0.098,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+56,Salto Grande Reservoir,(B3-B4+B8)/(B3+B4+B8),AP,NA,QUAC ,ea*AP+b,0.66,0.11,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+56,Salto Grande Reservoir,(B3-B4+B5)/(B3+B4+B5),AQ,NA,QUAC ,ea*AQ+b,0.8,0.081,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,Y,N
+56,Salto Grande Reservoir,(B3-B4+B5+B6+B7+B8)/ (B3+B4+B5+B6+B7+B8),AR,NA,QUAC ,ea*AR+b,0.78,0.086,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+56,Salto Grande Reservoir,(B4-B7)/(B6-B7),AS,NA,QUAC ,ea*AS+b,0.66,0.12,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+59,"Brome Lake, Lake Champlain, Lake Magog",EBS,AA,BoA,COSTMod,"exp(-a*AB+b*AC+d+AD+e), exp(-f*AE+g)",0.85,2.4,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,Y,N
+60,Baysh Dam,MCI,M,Rrs,NA,a*M+b,0.96,0.039,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+63,Unidentified,B5/B4,A,BoA,ICOR,"a-b*AL, c*A",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+63,Unidentified,(B2-B4)/B3,AL,BoA,ICOR,"a-b*AL, c*A",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+68,Unidentified,"ANN: B2-B8A, B5/B4, B3/B2, B3/B4, B3/B5, R705-(R665+R740)/2, B5-1.05*B4, B2B3B4, B2B3B4B5",BH,R,Sen2Cor,"Logistic regression, SVM, RF, AdaBoost, XGBoost, ANN",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+70,Ridiyagama reservoir,(1+B4)/(1-B5),BI,R,Dark object subtraction,(a-BI)/b,0.81,6.13,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+72,Lake Simcoe,EMDL,BK,Rrs,Dark spectrum fitting,EMDL,NA,0.06,15.08,19.56,10^|log10(estimated)-log10(observed)|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+73,Tahiu Lake,B5/B4,A,Rrs,"improved land target-based atmospheric
+correction method",(a*A-b)^c,NA,8.01,NA,NA,NA,NA,NA,0.33,NA,NA,NA,NA,Y,N,N,N
+76,Tri An,B3/B6,BL,Rw,Sen2Cor,a*BL+c,0.72,5.95,0.24,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+77,Nasser Lake ,BWOA-ANN,CB,Reflectance,C2RCC,BWOA-ANN,0.916,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+78,Lake Chaohu,GBDT,CC,Reflectance,Sen2Cor,GBDT,0.77,34.77,NA,NA,NA,NA,NA,60.81,NA,NA,NA,NA,Y,N,Y,N
+79,Burullus Lake,B7/B8,CD,Reflectance,N/A,a2-b+c,0.83,NA,NA,NA,NA,NA,NA,NA,0.14,NA,NA,NA,Y,N,Y,N
+80,Wuliangsuhai Lake,NN,Y,NA,Sen2Cor,NN,0.929,2.405,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+82,Lake Panguipulli,OC2v2,CE,Reflectance,Sen2Cor,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+83,Lake Balik,2D CNN,T,NA,POLYMER,2D CNN,0.84,0.154,NA,0.107,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+86,"Harsha Lake, Taylorsville Lake",B5/B4,A,Reflectance,NA,NA,0.707,8.857,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+86,"Harsha Lake, Taylorsville Lake",(1/B4-1/B5)*B9,CG,Reflectance,NA,NA,0.588,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+86,"Harsha Lake, Taylorsville Lake",NDCI,N,Reflectance,NA,NA,0.698,15.906,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+86,"Harsha Lake, Taylorsville Lake",B3-(B4+B2-B4),W,Reflectance,NA,NA,0.228,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+87,Huancheng River,(B9-B8A)/(B9+B8A),CI,Reflectance,FLAASH,a2-b+c,0.812,NA,NA,0.802,|estimated - measured/estimated|/n,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+89,Gorgan Bay,ANN,BH,Reflectance,N/A,ANN,0.97,0.57,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,Y
+90,Multiple,MLP,AF,Rrs,Sen2Cor,NA,0.58,19.08,0.76,10.46,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+90,Multiple,GPR,AG,Rrs,Sen2Cor,NA,0.53,20.99,0.26,10.79,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+90,Multiple,SVR,I,Rrs,Sen2Cor,NA,0.41,23.54,5.42,10.78,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+90,Multiple,RF,K,Rrs,Sen2Cor,NA,0.69,17.84,0.41,9.24,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+90,Multiple,LGBM,L,Rrs,Sen2Cor,NA,0.75,15.15,-0.15,9.49,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+90,Multiple,CI,R,Rrs,Sen2Cor,NA,0.46,22.59,4.64,11.53,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+94,Multiple,Black Lake Peak Height,AH,Rrs,Sen2cor,NA,0.72,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+94,Multiple,B5-(B4+B6)/2,G,Rrs,Sen2cor,NA,0.77,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+97,Multiple,default C2RCC product,S,TOA,CR2CC,21(a(pigment)+k(a(detritus)+a(CDOM)))^1.04,0.79,5.4,0.8,1.6,10^|log10(estimated)-log10(observed)|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,B5/B5,A,Rrs,Normal,a(A)-b,0.49,4.71,NA,4.08,|estimated - measured|/n,NA,NA,0.3,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,1 Band: B4 673,BM,Rrs,Normal,a(B4^2)-b(B4)+c,0.61,7.08,NA,4.88,|estimated - measured|/n,NA,NA,0.31,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,1 Band: B4 680,BM,Rrs,1Deriv,a*exp(b*(B4)),0.8,3.21,NA,2.48,|estimated - measured|/n,NA,NA,0.26,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,B5*B4,BN,Rrs,1Deriv,a*exp(b*(B5*B7)),0.7,6.5,NA,4.2,|estimated - measured|/n,NA,NA,0.55,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,B4-B5,BO,Rrs,1Deriv,a*exp(b*(B4-B5)),0.68,6.99,NA,4.26,|estimated - measured|/n,NA,NA,0.47,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,"slope difference: B3, B4, B5",BP,Rrs,Sdiff,"a*exp(b*x),k1=(R(B5)-R(B4))/(B5-B4), k2=(R(B4)-R(B3))/(B4-B3), x=k1-k2",0.78,5.18,NA,3.26,|estimated - measured|/n,NA,NA,0.35,NA,NA,NA,NA,Y,N,Y,Y
+99,Pearl River Estuary,1 Band: B2,DA,Rrs,Normal,a(B2^2)-b(B2)+c,0.78,0.46,NA,0.4,|estimated - measured|/n,NA,NA,0.19,NA,NA,NA,NA,Y,N,Y,Y
+102,Multiple,SVM,AI,Rrs,CR2CC,NA,0.88,6.28,NA,2.62,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+102,Multiple,CB,AJ,Rrs,CR2CC,NA,0.98,17.33,NA,2.57,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+102,Multiple,LR,AK,Rrs,CR2CC,NA,0.84,17.33,NA,39.48,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+103,Multiple,B5/B4,A,Rrs,Sen2Cor,"aA+b, a(b^cA), a*lnA+b, aA^b ",0.96,28.99,NA,26.33,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+103,Multiple,(B6/B4)-(B6/B5),CY,Rrs,Sen2Cor,aA+b,0.98,30.13,NA,27.47,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+103,Multiple,MCI,M,Rrs,Sen2Cor,"aA+b, a(b^cA), a*lnA+b, aA^b ",0.66,30.22,NA,27.56,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+103,Multiple,NDCI,N,Rrs,Sen2Cor,"aA+b, a(b^cA)",0.92,30.13,NA,27.47,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+104,Xin’anjiang Reservoir,(1/B2-1/B3)*B5,BQ,NA,DOS,"(aA-bB+c)*B, A*B",NA,16.3,NA,NA,NA,NA,NA,0.207,NA,NA,NA,NA,Y,N,Y,Y
+104,Xin’anjiang Reservoir,(1/B2-1/B3)*B5,BQ,NA,DOS,"(aA-bB+c)*B, A*B",NA,25.6,NA,NA,NA,NA,NA,0.312,NA,NA,NA,NA,Y,N,Y,Y
+105,Pingzhai Reservoir,B7,BU,Rrs,Sen2Cor,aA+b,0.512,21.26,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+105,Pingzhai Reservoir,B7*B8,BV,Rrs,Sen2Cor,aA+b,0.509,22.42,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+105,Pingzhai Reservoir,B8*(B7-B5),CH,Rrs,Sen2Cor,aA²-bA+c,0.712,10.69,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+110,Daihai Lake- QC,B5/B4,A,Rrs,C2RCC,10^(a+bR + cR^2 + dR^3 + eR^4) where R =log( Rrs705/Rrs665),0.83,5.07,0.85,NA,NA,NA,NA,44.48,NA,NA,NA,NA,Y,Y,Y,Y
+110,Daihai Lake,B5/B4,A,Rrs,C2RCC,10^(a+bR + cR^2 + dR^3 + eR^4) where R =log( Rrs705/Rrs665),0.73,4.54,0.99,NA,NA,NA,NA,45.84,NA,NA,NA,NA,Y,N,N,N
+110,Daihai Lake- QC,(1/B4-1/B5)*B6,E,Rrs,C2RCC,a+b*E,0.82,6.62,0.8,NA,NA,NA,NA,42.24,NA,NA,NA,NA,Y,Y,Y,Y
+110,Daihai Lake,(1/B4-1/B5)*B6,E,Rrs,C2RCC,a+b*E,0.61,6.17,0.82,NA,NA,NA,NA,48.62,NA,NA,NA,NA,Y,N,N,N
+113,Bombah Broadwater,OC3,AU,Rrs,CR2CC,correlation,0.64,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Bombah Broadwater,OC3,AU,Rrs,CR2CC,correlation,0.71,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Bombah Broadwater,OC3,AU,Rrs,CR2CC,correlation,0.35,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Myall Lake,OC3,AU,Rrs,CR2CC,correlation,0.32,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Bombah Broadwater,ACOLITE Moses,BX,Rrs,CR2CC,correlation,0.78,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Bombah Broadwater,ACOLITE Moses,BX,Rrs,CR2CC,correlation,0.67,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Bombah Broadwater,ACOLITE Moses,BX,Rrs,CR2CC,correlation,0.42,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+113,Bombah Broadwater,ACOLITE Moses,BX,Rrs,CR2CC,correlation,0.41,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Y,Y
+114,Bayanbulak marshy meadow,OC4,BW,Rrs,Sen2Cor,10^(a+bA+cA²+dA³+eA?),0.19,0.39,NA,0.34,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+114,Bayanbulak marshy meadow,(1/B4-1/B5)*B6,E,Rrs,Sen2Cor,aA²+bA+c,0.84,0.78,NA,0.65,|estimated - measured|/n,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+117,Lake Malombe,NDCI,N,Rrs,?,aA²+bA+c,0.54,2.88,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,Y
+118,Multiple,FIC,BY,BOA,Sen2Cor,"(a+bA-cB-dC)²,A=(pB5-pB4)/(?B5-?B4),B=(pB6-pB5)/(?B6-?B5),C=(pB12-pB11)/(?B12-?B11)",0.85,1.19,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+122,Gorky reservoir,B5/B4,A,Rrs,ACOLITE,aA2+bA+c,0.84,3.01,0.003,NA,NA,NA,NA,13.89%,NA,NA,NA,NA,Y,N,N,N
+122,Gorky reservoir,NDCI,N,Rrs,ACOLITE,aN2+bN+c,0.86,3.02,-0.001,NA,NA,NA,NA,12.14%,NA,NA,NA,NA,Y,N,Y,N
+124,Alton Water Reservior,ANN,BH,NA,Abs,"adaptive network-based fuzzy inference system
+(ANFIS) B8, B4, B3, B2",NA,NA,NA,NA,NA,NA,NA,14.44%,NA,NA,NA,NA,Y,N,N,Y
+124,Alton Water Reservior,ANN,BH,NA,Abs,"radial base function (RBF) B8, B4, B3, B2",NA,NA,NA,NA,NA,NA,NA,19.22%,NA,NA,NA,NA,Y,N,N,Y
+124,Alton Water Reservior,ANN,BH,NA,Abs,"common least-squares estimator
+(LSE) B8, B4, B3, B2",NA,NA,NA,NA,NA,NA,NA,2.34%,NA,NA,NA,NA,Y,N,N,Y
+125,Aguieira Reservior,SNAP,BZ,NA,CR2CC,NA,NA,NA,NA,NA,NA,NA,NA,NA,55.00%,NA,NA,NA,Y,N,N,N
+125,Aguieira Reservior,SNAP,BZ,NA,CR2CC,NA,NA,NA,NA,NA,NA,NA,NA,NA,16.70%,NA,NA,NA,Y,N,N,N
+126,multiple,OC2,CA,BOA,Sen2Cor,"10^(a+bA+cA²+dA²)+e,A=log(B2/B3)",0.3,4.15,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+127,"Trasimeno, Maggiore, Mantova, Varese",BOMBER,AY,Rrs,ACOLITE,NA,0.97,12.7,NA,NA,10^|log10(estimated/observed)|/n,1.01,1.27,NA,55%,NA,NA,NA,N,Y,Y,N
+127,San Francisco Bay,NN,Y,Rrs,ACOLITE,NA,0.8,0.8,NA,NA,10^|log10(estimated/observed)|/n,0.97,1.24,NA,NA,NA,NA,NA,Y,N,Y,N
+128,Garda,WASI,AT,Rrs,C2RCC,NA,0.68,0.3,NA,NA,10^|log10(estimated/observed)|/n,0.91,1.25,NA,NA,NA,NA,NA,Y,N,Y,Y
+128,Trasimeno,WASI,AT,Rrs,C2RCC,NA,0.82,2.6,NA,NA,10^|log10(estimated/observed)|/n,1.14,1.63,NA,NA,NA,NA,NA,Y,N,Y,Y
+128,Garda,OC3,AU,Rrs,C2RCC,NA,0.38,0.5,NA,NA,10^|log10(estimated/observed)|/n,1.27,1.86,NA,NA,NA,NA,NA,Y,N,Y,Y
+128,Trasimeno,OC3,AU,Rrs,C2RCC,NA,0.29,4.1,NA,NA,10^|log10(estimated/observed)|/n,2.18,2.29,NA,NA,NA,NA,NA,Y,N,Y,Y
+128,Garda,C2RCC,S,Rrs,C2RCC,NA,0.41,0.5,NA,NA,10^|log10(estimated/observed)|/n,0.78,1.73,NA,NA,NA,NA,NA,Y,N,Y,Y
+128,Trasimeno,C2RCC,S,Rrs,C2RCC,NA,0.51,3.2,NA,NA,10^|log10(estimated/observed)|/n,1.19,1.35,NA,NA,NA,NA,NA,Y,N,Y,Y
+130,multiple,B5/B4,A,Rrs,C2X,aA+b,0.93,5.71,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+133,multiple,Mixture Density Network (MDN),J,Rrs,POLYMER,NA,NA,NA,NA,1.865,10^|log10(estimated)-log10(observed)|/n,1.343,1.865,60.50%,NA,NA,NA,0.964,Y,N,Y,N
+136,Lake Zirahuén,B5-B6,CO,Rrs,Sen2Cor,aCO+b,0.64,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+138,multiple,NDCI,N,Rrs,Sen2Cor,aN2+bN+c,0.89,12.66,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N ,Y,Y
+142,"Albano,  Bracciano, Nemi",MDN,J,Rrs,C2RCC,NA,0.467,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+142,"Albano,  Bracciano, Nemi",C2RCC,S,Rrs,C2RCC,NA,0.475,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+143,"Superior, Middle, Inferior Mantua Lakes","B5/B4, BOMBER",AZ,Rrs,ATCOR,"aA+b, BOMBER",0.93,NA,NA,4.64,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,20.18%,NA,Y,N,Y,Y
+144,"Superior, Middle, Inferior Mantua Lakes",B5/B4,A,Rrs,Sen2Cor,aA+b,0.94,NA,NA,3.4,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,11.76%,NA,Y,N,Y,Y
+145,Erie,MCI,M,TOA reflectance,NA,aM+b,0.84,9.6,0.15,6.66,|estimated - measured|/n *notExplicit,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+146,Multiple,C2RCC-C2X,S,Reflectance,C2RCC,NA,0.75,2.26,NA,NA,NA,NA,NA,NA,14%,NA,NA,NA,Y,N,Y,N
+152,"Lake Shinji, Lake Nakaumi, Vaal Dam Reservoir",B5/B4,A,Rrs,NA,aA+b,0.34,3.1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+152,"Lake Shinji, Lake Nakaumi, Vaal Dam Reservoir",(B5-B4)/B8,CW,Rrs,NA,aCW+b,0.25,3.3,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+153,Koyama-ike,NDCI,N,Rrs,"""relative atmospheric correction""",a*exp(bN),0.85,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+155,multiple,C2RCC,S,NA,C2RCC,NA,0.79,5.4,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,N,N
+159,Multiple,NN,Y,TOA,Sen2Cor,aA²-bA+c,0.88,5.75,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,N,Y
+160,Lake Chagan,eXtreme Gradient Boosting Classifier,BG,BOA,NA,"B5/B4, B8/B4, (B4-B5)B6, (B4-B5)/(B6-B5), NDCI, BGI",0.8,2.42,NA,NA,NA,NA,NA,9.55%,NA,NA,NA,NA,Y,NA,Y,Y
+160,Lake Chagan,RF,K,BOA,NA,"B5/B4, B8/B4, (B4-B5)B6, (B4-B5)/(B6-B5), NDCI, BGI",0.79,2.51,NA,NA,NA,NA,NA,9.86%,NA,NA,NA,NA,Y,NA,Y,Y
+161,Vembanad,B3/B2,BS,NA,Sen2Cor,aA+b,0.7659,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA,Y,N
+161,Vembanad,B4/B6,CT,NA,Sen2Cor,aA+b,0.7566,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA,Y,N
+161,Vembanad,B3/B7,CU,NA,Sen2Cor,aA+b,0.7777,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA,Y,N
+161,Vembanad,B4/B7,CV,NA,Sen2Cor,aA+b,0.8055,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA,Y,N
+162,Multiple,B5/B4,A,TOA,C2RCC,a*A+b,0.9,24.26,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+162,Multiple,B6/B5-B6/B4,AV,TOA,C2RCC,a*AV+b,0.73,24.33,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+162,Multiple,B6/B5-B6/B4,AV,TOA,C2RCC,a*AV+b,0.67,2.04,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+162,Multiple,B4/B5,AW,TOA,C2RCC,a*AW+b,0.72,6.15,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+162,Multiple,B4/B5,AW,TOA,C2RCC,a*AW+b,0.61,9.17,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,NA,N,N
+166,Multiple,B5/B4,A,Rrs,Sen2Cor,a*(A)b,0.91,35.16,2.99,NA,NA,NA,NA,NA,NA,NA,41.07,NA,Y,NA,N,N
+166,Multiple,log10[(max B1|B2)/B3],CP,Rrs,Sen2Cor,log10[(max B1|B2)/B3],0.55,0.94,0.09,NA,NA,NA,NA,NA,NA,NA,43.18,NA,Y,NA,N,N
+171,Vembanad Lake,MLR,P,Rrs,ACOLITE,a-b(B1/B3)+c(B2/B3)-d(B4/B3)+e(B5/B3),0.21,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,Y,Y
+171,Vembanad Lake,MLR,P,Rrs,POLYMER,a-b(B1/B3)+c(B2/B3)-d(B4/B3)+e(B5/B3),0.02,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,Y,Y
+172,Multiple,B5-(B4+B6)/2,G,TOA,Sen2cor,a*G+b,0.83,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+172,Multiple,B5-(B4+B6)/2,G,BOA,Sen2cor,a*G+b,0.8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+175,A Baxe Reservoir,B3,CR,TOA,DOS,CR,0.678,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA,Y,Y
+176,Multiple,B5-B4/B5+B4,N,NA,NA,a*N+b,NA,0.0249,NA,0.0142,|estimated - measured|/n,NA,NA,26.3,NA,NA,NA,NA,Y,Y,Y,N
+177,Multiple,B4/B5,AW,Rrs,Sen2Cor,a*AW^2 +a*AW +b,NA,9.09,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+180,"Barra Bonita, Bariri, Ibitinga",B5/B4,A,Rrs,Sen2cor,a*A+b,0.45,42.57,0.03,NA,NA,NA,NA,44.11,20.84,NA,NA,NA,Y,N,N,N
+180,"Barra Bonita, Bariri, Ibitinga",SL: (B5-B4)/?2 ? ?1,AX,Rrs,Sen2cor,a*AX+b,0.44,46.47,12.45,NA,NA,NA,NA,54.17,22.75,NA,NA,NA,Y,N,N,N
+180,"Barra Bonita, Bariri, Ibitinga",(1/B4-1/B5)*B6,E,Rrs,Sen2cor,a*E+b,0.46,42.91,6.85,NA,NA,NA,NA,52.51,21,NA,NA,NA,Y,N,N,N
+180,"Barra Bonita, Bariri, Ibitinga",NDCI,N,Rrs,Sen2cor,a*N2+b*N+c,0.44,53.19,-31.4,NA,NA,NA,NA,48.16,26.04,NA,NA,NA,Y,N,Y,Y
+182,Multiple,BNN,CL,Rrs,"POLYMER, C2RCC",BNN,NA,NA,-1.12,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+185,Poyang Lake,CNN,T,Rrs,Independent,CNN,0.97,2.38,NA,1.74,|estimated - measured|/n,NA,NA,48.39,NA,NA,NA,NA,Y,N,Y,Y
+186,Lake Taihu,Sun_13,CM,Rrs,NA,NA,0.7,0.82,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+187,Harsha Lake,B5/B4,A,Rrs,ELM,a*A+b,0.757,2.48,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,N
+187,Harsha Lake,Multipredictor model- Least heterogeneous,CF,Rrs,FLASH,NA,0.918,4.23,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+187,Harsha Lake,Multipredictor model- more heterogeneous,CF,Rrs,FLASH,NA,0.935,3.67,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+187,Harsha Lake,(1/B4-1/B5)*B6,E,Rrs,ELM,a*E+b,0.737,2.72,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Na,N,N
+187,Harsha Lake,NDCI,N,Rrs,ELM,a*N+b,0.693,3.24,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,Na,N,N
+188,Harsha Lake,Multipredictor model- Most heterogeneous,CF,Rrs,FLASH,NA,0.966,2.57,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+189,Baiyangdian Lake,CNN,T,NA,NA,CNN,0.879,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N,N,Y,N
+191,Multiple,NDCI + B8a,CJ,Rrs,Acolite,a*CJ +b,0.83,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,Y,Y
+192,Multiple,(B3-B4)/(B3+B4),AO,Rrs,Acolite,10^(a*AO+b),0.84,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+192,Multiple,NDCI,N,Rrs,Acolite,10^(a*N+b),0.81,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,N,N,N
+198,Shenzhen Bay,XGBoost,BG,Rrs,SIAC,NA,NA,NA,0.052,NA,NA,NA,NA,NA,NA,NA,NA,0.16,Y,N,Y,Y
+199,multiple,Ocx,CN,?w,C2X,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,Y,N,N

@@ -1,0 +1,98 @@
+---
+title: "Combine_UNC_Buoy_Data"
+output: html_document
+date: "2024-03-25"
+---
+#Set up environment
+```{r}
+rm(list=ls()) #clear environment
+
+#load libraries
+library(dplyr)
+
+#Set working directory
+wd <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Raw_Data/UNC_Buoys/Chlorophyll/"
+
+#User defined target buoy
+targetBuoy <- "NH" #HR (Haw River), WO (White Oak), or NH (New Hope)
+targetDepth <- 0.1 
+
+#Buoy data
+if (targetBuoy == "HR"){
+  Buoy <- paste0(wd, "Haw_River/")
+} else if(targetBuoy == "NH"){
+  Buoy <- paste0(wd, "New_Hope/")
+} else if(targetBuoy == "WO"){
+  Buoy <- paste0(wd, "White_Oak/")
+}
+
+Buoy <- list.files(Buoy, full.names = T) # Change to target buoy
+
+#Output directory
+Processed_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Processed_Data/Chlorophyll/"
+```
+
+#Function for filtering for data between 9am and 3pm
+```{r}
+filter_day <- function(data){
+  Day <- data %>%
+    mutate(noFieldTime = hour(data$DT) < 9 | hour(data$DT) >= 15)
+  Day14 = Day[Day$noFieldTime == F, ] 
+  
+  hour15 <- dplyr::filter(data, grepl("15:00:00",DT))
+  hour15$noFieldTime <- as.logical("FALSE")
+  dayAll <- rbind(Day14, hour15)
+  return(dayAll)
+}
+```
+
+#Function to remove descriptive text from dat files
+```{r}
+clean_dat <- function(df){
+  read_dat <- read.table(df, header=TRUE, sep="\t")
+  names(read_dat) <- "all_data"
+  
+  Dat_sep <- as.data.frame(read_dat[- grep("Profile|Status", read_dat$all_data),])
+  names(Dat_sep) <- "all_data"
+  
+  Dat_sep <- as.data.frame(do.call(rbind, strsplit(Dat_sep$all_data, " +")))
+  names(Dat_sep) <- dat_columns
+  return(Dat_sep)
+}
+```
+
+#Read in and combine dat files
+```{r}
+dat_columns <- c("date", "time", "temperature_C", "conductivity_mScm", 
+"salinity_psu", "depth_m", "pH", "turbitiy_ntu", "chlorophyl_mgL", "dissolved_oxygen_mgL")
+
+All <- lapply(Buoy, clean_dat)
+big_df <- do.call(rbind, All)
+big_df$chlorophyl_mgL <- as.numeric(big_df$chlorophyl_mgL)
+big_df <- big_df %>% drop_na(chlorophyl_mgL)
+```
+
+#Filter by depth
+```{r}
+Surface <- big_df[as.numeric(big_df$depth_m) <= targetDepth,]
+Surface <- Surface[as.numeric(Surface$depth_m) >= 0,]
+rm(big_df, All)
+Surface <- Surface[!is.na(Surface$chlorophyl_mgL),]
+```
+
+#Filter by daylight
+```{r}
+Surface1 <- Surface
+Surface1$Datetime <- paste(Surface1$date, "", Surface1$time)
+Surface1$DT <- parse_date_time(as.character(Surface1$Datetime), order = "%m/%d/%y %H:%M:%S", tz = 'EST') 
+
+dayAll <- filter_day(Surface1)
+Day = dayAll %>% select(-c(noFieldTime, DT, Datetime))
+```
+
+# Export
+```{r}
+write.csv(Day, paste0(Processed_filepath, targetBuoy, "_Filtered_Chl.csv"), row.names = F)
+
+rm(dayAll)
+```
