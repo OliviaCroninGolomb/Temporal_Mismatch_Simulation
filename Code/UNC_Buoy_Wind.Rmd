@@ -26,7 +26,6 @@ Figure_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency
 Table_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Outputs/Tables/Wind/"
 
 Processed_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Processed_Data/Wind/"
-
 ```
 
 #Function for filtering for data between 9am and 3pm
@@ -200,7 +199,7 @@ rm(HR_wind, NH_wind, WO_wind, HRWindStats, NHWindStats, WOWindStats, statsList, 
 
 #Wind Speed Histogram
 ```{r}
-#Plot histogram, seperated by location
+#Plot histogram, separated by location
 ws_hist <- ggplot(Wind_day, aes(x = Wind_Speed, fill = factor(Loc))) +
   geom_histogram(color ="grey30", binwidth = 0.5, alpha=0.6, aes(fill = factor(Loc))) +
   labs(x = "Wind Speed [m/s]", y = "Frequency", fill = "Location") +

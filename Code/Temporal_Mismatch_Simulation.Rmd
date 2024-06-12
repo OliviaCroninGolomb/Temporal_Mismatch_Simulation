@@ -27,16 +27,15 @@ wd <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profil
 #Output directory
 Figure_filepath <- "C:/Users/OCRONING/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/Chlorophyll_Temporal_Mismatch/Outputs/Figures/Mismatch/" 
 
-#Table_filepath <- paste0(od, "Tables/")
-
 #Read in 30min wind and chl data
 Chl <- read.csv(paste0(wd, "Chlorophyll/chlData30min.csv"))
 Wind <- read.csv(paste0(wd, "Wind/dailyWind30min.csv"))
-Wind_Chl <- na.omit(merge(Wind, Chl, by = c("Datetime", "loc")))
+#Wind_Chl <- na.omit(merge(Wind, Chl, by = c("Datetime", "loc")))
 ```
 
 #Select only days with >10 30min intervals
 ```{r}
+#Make character date into a datetime object. Extract the date, time, year, and day. Add an index column.
 Chl$Datetime <- parse_date_time(as.character(Chl$Datetime), order = "%y-%m-%d %H:%M:%S", tz = 'EST') 
 Chl$Date <- format(Chl$Datetime,"%Y-%m-%d")
 Chl$Time <- format(Chl$Datetime,"%H:%M")
@@ -52,7 +51,10 @@ allChl <- Chl %>%
 allChl <- allChl[allChl$count <= max(allChl$count) & allChl$count >= max(allChl$count) - 1 ,]
 allChl <- merge(Chl, allChl, by = "Date")
 allChl <- allChl[order(allChl$Index),]
+```
 
+#Extract the noon sample, as that will be the field sample proxy that the values from the increasing time intervals will be compared against.
+```{r}
 Chl_noon <- allChl[allChl$Time == "12:00", ]
 Chl_noon <- Chl_noon[,c(1,3)]
 allChl <- merge(allChl, Chl_noon, by = "Date")
@@ -62,7 +64,7 @@ names(allChl)[names(allChl) == 'mean_chl_mgL.y'] <- 'mean_chl_noon'
 
 #Subset by time range and calculate the stats
 ```{r}
-#Subset by time range
+#Time interval dataframe
 timeInt <- as.data.frame(unique(allChl$Time))
 names(timeInt) <- c("Time")
 timeInt$numTime <- seq(9,15,0.5)
@@ -153,7 +155,7 @@ ggsave(path = Figure_filepath, filename = paste0("chl_Interval_legend.png"), dev
 rm(Chl_Haw, Chl_NH, Chl_WO, combineChl, int_plot)
 ```
 
-#Plot Residuals of chl range within defined intervals
+#Plot mean absolute deviation of chl range within defined intervals
 ```{r}
 residStats <- data.frame()
 
@@ -277,7 +279,7 @@ row.names(targetAll) <- NULL
 targetAll$Datetime <- parse_date_time(paste(as.character(targetAll$Date), as.character(targetAll$Time)), order = "%y/%m/%d %H:%M", tz = 'EST') 
 ```
 
-#Hour Intervals
+#Field Sample Time Specific Intervals
 ```{r}
 Sample_date <- "2017-08-14"
 full_day <- c(0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6)
@@ -362,20 +364,9 @@ targetAll$Index <- seq(1,nrow(targetAll),1)
 targetAll$loc <- "jlnewhope"
 ```
 
-#Intervals
+#Error Stats for Each Time Interval
 ```{r}
 percent <- 0.2
-nThreshUp <- function(data, chl_threshold){
-  data %>%
-  reframe(rleid(na.omit(mean_chl_mgL) >= chl_threshold)) %>%
-  n_distinct()
-}
-
-nThreshDown <- function(data, chl_threshold){
-  data %>%
-  reframe(rleid(na.omit(mean_chl_mgL) <= chl_threshold)) %>%
-  n_distinct()
-}
 
 errorTime <- function(timeStep, intsDF, Sample_time){
   targetSub <- as.data.frame(cbind(targetAll, intsDF))
@@ -395,8 +386,8 @@ errorTime <- function(timeStep, intsDF, Sample_time){
   intNA = as.numeric(sum(is.na(targetTime$mean_chl_mgL)))
   intMAE = round(sum(abs(na.omit(targetTime$mean_chl_mgL) - na.omit(targetTime$mean_chl_noon))) / nrow(targetTime),2)
   
-  TimesUp <- nrow(targetTime[ targetTime$mean_chl_mgL > (midpt_value$mean_chl_mgL* (1+percent)), ])
-  TimesDown <- nrow(targetTime[ targetTime$mean_chl_mgL < (midpt_value$mean_chl_mgL*(1-percent)), ])
+  TimesUp <- nrow(targetTime[ targetTime$mean_chl_mgL > (midpt_value$mean_chl_mgL* (1 + percent)), ])
+  TimesDown <- nrow(targetTime[ targetTime$mean_chl_mgL < (midpt_value$mean_chl_mgL*(1 - percent)), ])
   Times = nrow(targetTime) - (TimesUp + TimesDown)
   
   timePassed <- max(targetTime$timePassed)*2
@@ -449,7 +440,7 @@ intError2 <- as.data.frame(rbind(intError10, intError12, intError14))
 intError <- as.data.frame(rbind(intError10[c(6,11,13:15)], intError12[c(6,11,13:15)], intError14[c(6,11,13:15)]))
 ```
 
-#Target All Time Series
+#Consecutive Days Chlorophyll Time Series
 ```{r}
 #Field samples
 target_midDay <- targetAll[targetAll$Date == "2017-08-14",]
@@ -529,7 +520,7 @@ gg_chl
 ggsave(path = Figure_filepath, filename = paste0("Interval_Chl_TimeSeries.png"), device = "png", plot = gg_chl, width = 9.5, height = 6.5, dpi = 300, units = "in")
 ```
 
-#Target All Time Series Simple
+#Consecutive Days Chlorophyll Time Series Simple
 ```{r}
 gg_chl_simple <- ggplot(na.omit(targetAll), aes(x=Datetime, y=mean_chl_mgL)) +
   geom_vline(data = targetInts2, aes(xintercept = lines, group = as.factor(Group), color = as.factor(Group) ), 
@@ -570,7 +561,7 @@ gg_chl_simple
 ggsave(path = Figure_filepath, filename = paste0("Interval_Chl_TimeSeries_Simple.png"), device = "png", plot = gg_chl_simple, width = 9.5, height = 6.5, dpi = 300, units = "in")
 ```
 
-#Target Sampling Midpoint Day Aug 14
+#Consecutive Days Chlorophyll Time Series Midpoint Day Aug 14
 ```{r}
 target_midDay2 <- target_midDay[ ! target_midDay$Index %in% as.character(midptIndex), ]
 
@@ -616,7 +607,7 @@ gg_midday
 ggsave(path = Figure_filepath, filename = paste0("MiddleDay_TimeSeries.png"), device = "png", plot = gg_midday, width = 9.5, height = 6.5, dpi = 300, units = "in")
 ```
 
-#Target All Wind Speed
+#Consecutive Days Wind Speed Time Series
 ```{r}
 Wind_Chl_TS <- merge(targetAll, Wind, by = c("Datetime", "loc"), all.x = T)
 Wind_Chl_Sub <- merge(target_midDay, Wind, by = c("Datetime", "loc"), all.x = T)
